@@ -82,7 +82,7 @@ export default function Contacto() {
   };
 
   return (
-    <div className="py-5 px-5 sm:py-12 sm:px-96">
+    <div className="py-5 px-5 md:py-6 sm:py-12 md:px-28 sm:px-96">
       <h2 className="text-3xl sm:text-6xl">¡Contáctanos!</h2>
       <h3 className="mt-2 sm:text-3xl sm:mt-5">¿Necesitas ayuda con algo? Ponete en contacto con nuestro equipo</h3>
       <form onSubmit={handleSubmit} className="p-5 sm:p-10 mt-5 rounded shadow bg-white flex flex-col items-start justify-center">

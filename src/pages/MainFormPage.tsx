@@ -36,10 +36,10 @@ export default function MainFormPage({ title, subtitle, temaOptions, subtemaOpti
       </div>
       <div className="absolute w-full sm:w-auto px-5 sm:p-0 top-1/2 left-1/2 bottom-0 transform -translate-x-1/2 -translate-y-1/2">
         <div className="flex-col pt-100">
-          <p className='text-center mb-2 main-title text-white '>{title}</p>
-          <p className="text-md sm:text-3xl text-center text-white">{subtitle}</p>
+          <p className='text-center text-2xl md:text-4xl sm:text-6xl mb-2 main-title text-white '>{title}</p>
+          <p className="text-md md:text-2xl sm:text-3xl text-center text-white">{subtitle}</p>
         </div>
-        <div className="shadow-lg flex-col bg-white sm:p-8 p-5 rounded-[10px] sm:mt-12 mt-2">
+        <div className="shadow-lg flex-col bg-white sm:p-8 p-5 rounded-[10px] sm:mt-12 md:mt-8 mt-2">
           <div className="mb-5 sm:mb-8">
             <p className="text-md sm:text-xl">Seleccione el tema que quiere consultar</p>
             <FormControl fullWidth className="mt-2 sm:mt-5">
