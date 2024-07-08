@@ -51,7 +51,7 @@ export default function MainFormPage({ title, subtitle, temaOptions, subtemaOpti
                 value={tema}
                 onChange={handleTemaChange}
               >
-                {temaOptions.map(option => (
+                {temaOptions?.map(option => (
                   <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
                 ))}
               </Select>
@@ -68,7 +68,7 @@ export default function MainFormPage({ title, subtitle, temaOptions, subtemaOpti
                 value={subtema}
                 onChange={handleSubtemaChange}
               >
-                {subtemaOptions.map(option => (
+                {subtemaOptions?.map(option => (
                   <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
                 ))}
               </Select>
