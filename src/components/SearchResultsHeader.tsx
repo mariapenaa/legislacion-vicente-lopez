@@ -66,11 +66,11 @@ const SearchResultsHeader: React.FC<SearchResultsHeaderProps> = ({
           inputProps={{ 'aria-label': 'Without label' }}
         >
           <MenuItem value="">
-            <p className='input-text'>{selectOptions.defaultText}</p>
+            <p className='input-text'>Seleccione un tema</p>
           </MenuItem>
-          {selectOptions.options.map((option) => (
-            <MenuItem key={option.value} value={option.value}>
-              {option.label}
+          {selectOptions.map((option) => (
+            <MenuItem key={option} value={option}>
+              {option}
             </MenuItem>
           ))}
         </Select>

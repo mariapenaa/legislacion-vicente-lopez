@@ -16,7 +16,8 @@ import Checkbox from '@mui/material/Checkbox';
 import { visuallyHidden } from '@mui/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
+import { FormattedLeg, Legislacion } from '@/utils/legislacion.interface';
 
 interface Data {
   id: number;
@@ -41,16 +42,6 @@ function createData(
     publication,
   }
 }
-
-const rows = [
-  createData(1, 'Decreto 24828', '24/01/14', 'Adhesión ley provincial', 'Ver Publicación'),
-  createData(1, 'Decreto 24828', '23/01/14', 'Nueva ley provincial', 'Ver Publicación'),
-  createData(1, 'Decreto 24828', '22/01/14', 'Cambiada ley provincial', 'Ver Publicación'),
-  createData(1, 'Decreto 24828', '15/01/14', 'Instancia ley provincial', 'Ver Publicación'),
-  createData(1, 'Decreto 24828', '29/01/14', 'Intento ley provincial', 'Ver Publicación'),
-  createData(1, 'Decreto 24828', '3/01/14', 'Alarma ley provincial', 'Ver Publicación'),
-  createData(1, 'Decreto 24828', '24/01/14', 'Veracidad ley provincial', 'Ver Publicación'),
-];
 
 function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
   if (b[orderBy] < a[orderBy]) {
@@ -190,19 +181,41 @@ interface EnhancedTableToolbarProps {
 interface EnhancedTableProps {
   searchQuery: string;
   selectedFilter: string;
+  queryParams: {tema: any, subtema: any},
+  setTypes: any;
 }
 
 
-export default function EnhancedTable({ searchQuery, selectedFilter }:EnhancedTableProps) {
+export default function EnhancedTable({ searchQuery, selectedFilter, queryParams, setTypes }:EnhancedTableProps) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
+  const [legislaciones, setLegislaciones] = useState([]);
   const pathname = usePathname();
 
-  console.log(searchQuery)
-
+  useEffect(()=>{
+    const { tema, subtema } = queryParams
+    const fetchTemas = async () => {
+      try {
+        const response = await fetch(`/api/legislacion/${tema}/${subtema}`);
+        if (response.ok) {
+          const data = await response.json();
+          const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date:leg.fecha_ing, publication: "Ver publicación" }));
+          setLegislaciones(formattedData);
+          const uniqueTypes = Array.from(new Set(formattedData.map((legislacion: FormattedLeg) => legislacion.type)));
+          setTypes(uniqueTypes)
+        } else {
+          console.error('Error fetching temas:', response.statusText);
+        }
+      } catch (error) {
+        console.error('Error connecting to the server:', error);
+      }
+    };
+    fetchTemas()
+  }, []) 
+  
   const handleRequestSort = (
     event: React.MouseEvent<unknown>,
     property: keyof Data,
@@ -214,7 +227,7 @@ export default function EnhancedTable({ searchQuery, selectedFilter }:EnhancedTa
 
   const handleSelectAllClick = (event: React.ChangeEvent<HTMLInputElement>) => {
     if (event.target.checked) {
-      const newSelected = rows.map((n) => n.id);
+      const newSelected = legislaciones.map((n: FormattedLeg) => n.id);
       setSelected(newSelected);
       return;
     }
@@ -253,16 +266,16 @@ export default function EnhancedTable({ searchQuery, selectedFilter }:EnhancedTa
 
   // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
-    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
+    page > 0 ? Math.max(0, (1 + page) * rowsPerPage - legislaciones.length) : 0;
 
     const filteredRows = useMemo(() => {
-      return rows.filter((row) => {
+      return legislaciones.filter((row: FormattedLeg) => {
         return (
           row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
           (selectedFilter === '' || row.type === selectedFilter)
         );
       });
-    }, [searchQuery, selectedFilter]);
+    }, [searchQuery, selectedFilter, legislaciones]);
   
     const visibleRows = useMemo(() => {
       return stableSort(filteredRows, getComparator(order, orderBy)).slice(
@@ -286,10 +299,10 @@ export default function EnhancedTable({ searchQuery, selectedFilter }:EnhancedTa
               orderBy={orderBy}
               onSelectAllClick={handleSelectAllClick}
               onRequestSort={handleRequestSort}
-              rowCount={rows.length}
+              rowCount={legislaciones.length}
             />
             <TableBody>
-              {visibleRows.map((row, index) => {
+              {visibleRows.map((row: any, index) => {
                 const isItemSelected = isSelected(row.id);
                 const labelId = `enhanced-table-checkbox-${index}`;
 

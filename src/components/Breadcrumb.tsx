@@ -9,7 +9,6 @@ const Breadcrumb = () => {
 
     const paths = usePathname()
     const pathNames = paths?.split('/').filter( path => path )
-    console.log(pathNames)
     return (
         <div>
             <ul className="flex">

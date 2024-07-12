@@ -1,5 +1,6 @@
 'use client';
 
+import { SubTema } from "@/utils/subtema.interface";
 import { FormControl, InputLabel, MenuItem, Select, Button } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
@@ -8,17 +9,19 @@ interface InformacionFormProps {
   title: string;
   subtitle: string;
   temaOptions: { value: string | number; label: string }[];
-  subtemaOptions: { value: string | number; label: string }[];
   route: string;
 }
 
-export default function MainFormPage({ title, subtitle, temaOptions, subtemaOptions, route }: InformacionFormProps) {
+export default function MainFormPage({ title, subtitle, temaOptions, route }: InformacionFormProps) {
   const router = useRouter();
   const [tema, setTema] = useState('');
   const [subtema, setSubtema] = useState('');
+  const [subtemaOptions, setSubtemaOptions] = useState([]);
 
   const handleTemaChange = (event: any) => {
     setTema(event.target.value);
+    setSubtema('')
+    fetchSubTemas(event.target.value)
   };
 
   const handleSubtemaChange = (event: any) => {
@@ -28,6 +31,21 @@ export default function MainFormPage({ title, subtitle, temaOptions, subtemaOpti
   const handleButtonClick = () => {
     const queryString = new URLSearchParams({ tema, subtema }).toString();
     router.push(`${route}?${queryString}`);
+  };
+
+  const fetchSubTemas = async (id: number) => {
+    try {
+      const response = await fetch(`/api/subtemas/${id}`);
+      if (response.ok) {
+        const data = await response.json();
+        const formattedData = data.map((tema: SubTema) => ({ value: tema.eidsubtema, label: tema.csubtema }));
+        setSubtemaOptions(formattedData);
+      } else {
+        console.error('Error fetching temas:', response.statusText);
+      }
+    } catch (error) {
+      console.error('Error connecting to the server:', error);
+    }
   };
 
   return (
@@ -62,20 +80,21 @@ export default function MainFormPage({ title, subtitle, temaOptions, subtemaOpti
             <FormControl fullWidth className="mt-2 sm:mt-5">
               <InputLabel id="subtema-select-label">Subtema</InputLabel>
               <Select
+                disabled={!subtemaOptions || subtemaOptions.length === 0}
                 labelId="subtema-select-label"
                 id="subtema-select"
                 label="Subtema"
                 value={subtema}
                 onChange={handleSubtemaChange}
               >
-                {subtemaOptions?.map(option => (
+                {subtemaOptions?.map((option: any) => (
                   <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
                 ))}
               </Select>
             </FormControl>
           </div>
           <div className="flex justify-end">
-            <Button variant="contained" onClick={handleButtonClick}>Buscar</Button>
+            <Button variant="contained" disabled={!subtema || !tema} onClick={handleButtonClick}>Buscar</Button>
           </div>
         </div>
       </div>
