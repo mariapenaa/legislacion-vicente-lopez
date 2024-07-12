@@ -13,9 +13,13 @@
     "@emotion/styled": "^11.11.5",
     "@mui/icons-material": "^5.15.20",
     "@mui/material": "^5.15.20",
+    "mysql2": "^3.10.2",
     "next": "14.2.4",
     "react": "^18",
-    "react-dom": "^18"
+    "react-dom": "^18",
+    "sequelize": "^6.37.3",
+    "sequelize-auto": "^0.8.8",
+    "sequelize-cli": "^6.6.2"
   },
   "devDependencies": {
     "@types/node": "^20",

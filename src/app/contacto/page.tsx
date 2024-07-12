@@ -66,7 +66,6 @@ export default function Contacto() {
 
     // If email is valid, clear errors and proceed with form submission
     setErrors({ mail: "" });
-    console.log("Form submitted:", form);
 
     // Clear the form
     setForm({
