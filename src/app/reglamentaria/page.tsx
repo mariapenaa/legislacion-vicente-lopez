@@ -6,9 +6,10 @@ import { useState, useEffect } from "react";
 
 export default function Reglamentaria() {
   const [temaOptions, setTemaOptions] = useState([]);
-  
+  const [loadingTemas, setLoadingTemas] = useState(true);
 
   useEffect(()=>{
+    setLoadingTemas(true)
     const fetchTemas = async () => {
       try {
         const response = await fetch('/api/temas');
@@ -16,6 +17,7 @@ export default function Reglamentaria() {
           const data = await response.json();
           const formattedData = data.map((tema: Tema) => ({ value: tema.eidtema, label: tema.ctema }));
           setTemaOptions(formattedData);
+          setLoadingTemas(false)
         } else {
           console.error('Error fetching temas:', response.statusText);
         }
@@ -31,6 +33,7 @@ export default function Reglamentaria() {
       title="Reglamentario"
       subtitle="Consultá de manera simple y ágil la reglamentación"
       temaOptions={temaOptions}
+      loadingTemas={loadingTemas}
       route="reglamentaria/resultados"
     />
   );
