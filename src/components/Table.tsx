@@ -18,6 +18,7 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedLeg, Legislacion } from '@/utils/legislacion.interface';
+import { Skeleton } from '@mui/material';
 
 interface Data {
   id: number;
@@ -127,7 +128,7 @@ interface EnhancedTableHeadProps {
 }
 
 function EnhancedTableHead(props: EnhancedTableHeadProps) {
-  const { onSelectAllClick, order, orderBy, numSelected, rowCount, onRequestSort } =
+  const { order, orderBy, numSelected, rowCount, onRequestSort } =
     props;
   const createSortHandler =
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
@@ -138,15 +139,6 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
-          {/* <Checkbox
-            color="primary"
-            indeterminate={numSelected > 0 && numSelected < rowCount}
-            checked={rowCount > 0 && numSelected === rowCount}
-            onChange={onSelectAllClick}
-            inputProps={{
-              'aria-label': 'select all desserts',
-            }}
-          /> */}
         </TableCell>
         {headCells.map((headCell) => (
           <TableCell
@@ -174,28 +166,29 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
   );
 }
 
-interface EnhancedTableToolbarProps {
-  numSelected: number;
-}
-
 interface EnhancedTableProps {
   searchQuery: string;
   selectedFilter: string;
   queryParams: {tema: any, subtema: any},
   setTypes: any;
+  setLoadingTypes: any
+  setResultsLength: any
 }
 
 
-export default function EnhancedTable({ searchQuery, selectedFilter, queryParams, setTypes }:EnhancedTableProps) {
+export default function EnhancedTable({ searchQuery, setResultsLength, selectedFilter, queryParams, setTypes, setLoadingTypes }:EnhancedTableProps) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
   const [page, setPage] = React.useState(0);
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [legislaciones, setLegislaciones] = useState([]);
+  const [loading, setLoading] = useState(true);
   const pathname = usePathname();
 
   useEffect(()=>{
+    setLoading(true)
+    setLoadingTypes(true)
     const { tema, subtema } = queryParams
     const fetchTemas = async () => {
       try {
@@ -205,7 +198,11 @@ export default function EnhancedTable({ searchQuery, selectedFilter, queryParams
           const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date:leg.fecha_ing, publication: "Ver publicación" }));
           setLegislaciones(formattedData);
           const uniqueTypes = Array.from(new Set(formattedData.map((legislacion: FormattedLeg) => legislacion.type)));
+          console.log(uniqueTypes)
           setTypes(uniqueTypes)
+          setLoading(false)
+          setLoadingTypes(false)
+          setResultsLength(formattedData.length)
         } else {
           console.error('Error fetching temas:', response.statusText);
         }
@@ -302,54 +299,54 @@ export default function EnhancedTable({ searchQuery, selectedFilter, queryParams
               rowCount={legislaciones.length}
             />
             <TableBody>
-              {visibleRows.map((row: any, index) => {
-                const isItemSelected = isSelected(row.id);
-                const labelId = `enhanced-table-checkbox-${index}`;
-
-                return (
-                  <TableRow
-                    hover
-                   /*  onClick={(event) => handleClick(event, row.id)} */
-                    /* role="checkbox" */
-                    aria-checked={isItemSelected}
-                    tabIndex={-1}
-                    key={row.id}
-                    selected={isItemSelected}
-                    sx={{ cursor: 'pointer' }}
-                  >
-                    <TableCell padding="checkbox">
-                      {/* <Checkbox
-                        color="primary"
-                        checked={isItemSelected}
-                        inputProps={{
-                          'aria-labelledby': labelId,
-                        }}
-                      /> */}
+              {loading ? (
+                Array.from({ length: 4 }).map((_, index) => (
+                  <TableRow key={index}>
+                    <TableCell padding="checkbox"></TableCell>
+                    <TableCell component="th" scope="row" padding="none">
+                      <Skeleton variant="text" sx={{ fontSize: '1rem' }} />
                     </TableCell>
-                    <TableCell
-                      component="th"
-                      id={labelId}
-                      scope="row"
-                      padding="none"
-                    >
-                      {row.name}
-                    </TableCell>
-                    <TableCell align="right">{row.type}</TableCell>
-                    <TableCell align="right">{row.date}</TableCell>
-                    <TableCell align="right">
-                      <Link className="underline flex justify-end" href={`${pathname}/${row.id}`} passHref>
-                        {row.publication}
-                      </Link>
-                    </TableCell>
+                    <TableCell align="right"><Skeleton variant="text" sx={{ fontSize: '1rem' }} /></TableCell>
+                    <TableCell align="right"><Skeleton variant="text" sx={{ fontSize: '1rem' }} /></TableCell>
+                    <TableCell align="right"><Skeleton variant="text" sx={{ fontSize: '1rem' }} /></TableCell>
                   </TableRow>
-                );
-              })}
+                ))
+              ) : (
+                visibleRows.map((row: any, index) => {
+                  const isItemSelected = isSelected(row.id);
+                  const labelId = `enhanced-table-checkbox-${index}`;
+
+                  return (
+                    <TableRow
+                      hover
+                      aria-checked={isItemSelected}
+                      tabIndex={-1}
+                      key={row.id}
+                      selected={isItemSelected}
+                      sx={{ cursor: 'pointer' }}
+                    >
+                      <TableCell padding="checkbox"></TableCell>
+                      <TableCell
+                        component="th"
+                        id={labelId}
+                        scope="row"
+                        padding="none"
+                      >
+                        {row.name}
+                      </TableCell>
+                      <TableCell align="right">{row.type}</TableCell>
+                      <TableCell align="right">{row.date}</TableCell>
+                      <TableCell align="right">
+                        <Link className="underline flex justify-end" href={`${pathname}/${row.id}`} passHref>
+                          {row.publication}
+                        </Link>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })
+              )}
               {emptyRows > 0 && (
-                <TableRow
-                  style={{
-                    height: (53) * emptyRows,
-                  }}
-                >
+                <TableRow style={{ height: (53) * emptyRows }}>
                   <TableCell colSpan={6} />
                 </TableRow>
               )}

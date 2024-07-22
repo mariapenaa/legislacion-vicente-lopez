@@ -1,22 +1,29 @@
 'use client';
 
 import { SubTema } from "@/utils/subtema.interface";
-import { FormControl, InputLabel, MenuItem, Select, Button } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, Button, Skeleton } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
 interface InformacionFormProps {
   title: string;
   subtitle: string;
-  temaOptions: { value: string | number; label: string }[];
+  temaOptions: TemaOptions[];
   route: string;
+  loadingTemas: boolean;
 }
 
-export default function MainFormPage({ title, subtitle, temaOptions, route }: InformacionFormProps) {
+export interface TemaOptions {
+  value: string | number;
+  label: string
+}
+
+export default function MainFormPage({ title, subtitle, temaOptions, route, loadingTemas }: InformacionFormProps) {
   const router = useRouter();
   const [tema, setTema] = useState('');
   const [subtema, setSubtema] = useState('');
   const [subtemaOptions, setSubtemaOptions] = useState([]);
+  const [loadingSubTemas, setLoadingSubTemas] = useState(false);
 
   const handleTemaChange = (event: any) => {
     setTema(event.target.value);
@@ -35,11 +42,13 @@ export default function MainFormPage({ title, subtitle, temaOptions, route }: In
 
   const fetchSubTemas = async (id: number) => {
     try {
+      setLoadingSubTemas(true)
       const response = await fetch(`/api/subtemas/${id}`);
       if (response.ok) {
         const data = await response.json();
         const formattedData = data.map((tema: SubTema) => ({ value: tema.eidsubtema, label: tema.csubtema }));
         setSubtemaOptions(formattedData);
+        setLoadingSubTemas(false)
       } else {
         console.error('Error fetching temas:', response.statusText);
       }
@@ -60,38 +69,48 @@ export default function MainFormPage({ title, subtitle, temaOptions, route }: In
         <div className="shadow-lg flex-col bg-white sm:p-8 p-5 rounded-[10px] sm:mt-12 md:mt-8 mt-2">
           <div className="mb-5 sm:mb-8">
             <p className="text-md sm:text-xl">Seleccione el tema que quiere consultar</p>
-            <FormControl fullWidth className="mt-2 sm:mt-5">
-              <InputLabel id="tema-select-label">Tema</InputLabel>
-              <Select
-                labelId="tema-select-label"
-                id="tema-select"
-                label="Tema"
-                value={tema}
-                onChange={handleTemaChange}
-              >
-                {temaOptions?.map(option => (
-                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+              {loadingTemas ? (
+                  <Skeleton variant="rectangular" width="100%" height={52} />
+                ) : (
+                  <FormControl fullWidth className="mt-2 sm:mt-5">
+                    <InputLabel id="tema-select-label">Tema</InputLabel>
+                    <Select
+                      labelId="tema-select-label"
+                      id="tema-select"
+                      label="Tema"
+                      value={tema}
+                      onChange={handleTemaChange}
+                    >
+                      {temaOptions?.map(option => (
+                        <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                )
+              }
           </div>
           <div className="mb-5 sm:mb-8">
             <p className="text-md sm:text-xl">Seleccione el subtema que quiere consultar</p>
-            <FormControl fullWidth className="mt-2 sm:mt-5">
-              <InputLabel id="subtema-select-label">Subtema</InputLabel>
-              <Select
-                disabled={!subtemaOptions || subtemaOptions.length === 0}
-                labelId="subtema-select-label"
-                id="subtema-select"
-                label="Subtema"
-                value={subtema}
-                onChange={handleSubtemaChange}
-              >
-                {subtemaOptions?.map((option: any) => (
-                  <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            { loadingSubTemas ? (
+              <Skeleton variant="rectangular" width="100%" height={52} />
+              ): (
+              <FormControl fullWidth className="mt-2 sm:mt-5">
+                <InputLabel id="subtema-select-label">Subtema</InputLabel>
+                <Select
+                  disabled={!subtemaOptions || subtemaOptions.length === 0}
+                  labelId="subtema-select-label"
+                  id="subtema-select"
+                  label="Subtema"
+                  value={subtema}
+                  onChange={handleSubtemaChange}
+                >
+                  {subtemaOptions?.map((option: any) => (
+                    <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+              )
+            }
           </div>
           <div className="flex justify-end">
             <Button variant="contained" disabled={!subtema || !tema} onClick={handleButtonClick}>Buscar</Button>
