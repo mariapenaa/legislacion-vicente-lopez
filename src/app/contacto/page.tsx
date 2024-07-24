@@ -1,24 +1,27 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Button, TextField } from "@mui/material";
+import { Alert, Button, TextField, formControlClasses, CircularProgress } from "@mui/material";
+import CheckIcon from '@mui/icons-material/Check';
+import ErrorIcon from '@mui/icons-material/Error';
 
 export default function Contacto() {
   const [form, setForm] = useState({
-    nombre: "",
-    mail: "",
-    mensaje: ""
+    name: "",
+    email: "",
+    message: ""
   });
-
+  const [success, setSucces] = useState(false)
+  const [error, setError] = useState(false)
   const [errors, setErrors] = useState({
-    mail: ""
+    email: ""
   });
-
+  const [loading, setLoading] = useState(false)
   const [isFormValid, setIsFormValid] = useState(false);
 
   useEffect(() => {
-    const { nombre, mail, mensaje } = form;
-    if (nombre && mail && mensaje && !errors.mail) {
+    const { name, email, message } = form;
+    if (name && email && message && !errors.email) {
       setIsFormValid(true);
     } else {
       setIsFormValid(false);
@@ -35,47 +38,59 @@ export default function Contacto() {
 
   const handleBlur = (e: any) => {
     const { id, value } = e.target;
-    if (id === "mail") {
-      validateEmailOnBlur(value);
+    if (id === "email") {
+      validateEemailOnBlur(value);
     }
   };
 
-  const validateEmailOnBlur = (email: string) => {
+  const validateEemailOnBlur = (eemail: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    if (!re.test(String(email).toLowerCase())) {
+    if (!re.test(String(eemail).toLowerCase())) {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        mail: "El correo electrónico no es válido."
+        email: "El correo electrónico no es válido."
       }));
     } else {
       setErrors((prevErrors) => ({
         ...prevErrors,
-        mail: ""
+        email: ""
       }));
     }
   };
 
   const handleSubmit = (e: any) => {
     e.preventDefault();
-
-    // Validate email before submitting
-    if (!validateEmail(form.mail)) {
-      setErrors({ mail: "El correo electrónico no es válido." });
+    setLoading(true)
+    // Validate eemail before submitting
+    if (!validateEemail(form.email)) {
+      setErrors({ email: "El correo electrónico no es válido." });
+      setLoading(false)
       return;
     }
-
-    // If email is valid, clear errors and proceed with form submission
-    setErrors({ mail: "" });
-
-    // Clear the form
-    setForm({
-      nombre: "",
-      mail: "",
-      mensaje: ""
-    });
+    const apiEndpoint = '/api/email';
+    console.log(form)
+    fetch(apiEndpoint, {
+      method: 'POST',
+      body: JSON.stringify(form),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        setErrors({ email: "" });
+        setForm({
+          name: "",
+          email: "",
+          message: ""
+        });
+        setLoading(false)
+        setSucces(true)
+      })
+      .catch((err) => {
+        setError(true)
+        setLoading(false)
+      });
   };
 
-  const validateEmail = (email: string) => {
+  const validateEemail = (email: string) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     return re.test(String(email).toLowerCase());
   };
@@ -87,37 +102,52 @@ export default function Contacto() {
       <form onSubmit={handleSubmit} className="p-5 sm:p-10 mt-5 rounded shadow bg-white flex flex-col items-start justify-center">
         <TextField
           className="w-full mb-5"
-          id="nombre"
+          id="name"
           label="Nombre"
           variant="outlined"
-          value={form.nombre}
+          value={form.name}
           onChange={handleChange}
         />
         <TextField
           className="w-full mb-5"
-          id="mail"
+          id="email"
           label="Mail"
           variant="outlined"
-          value={form.mail}
+          value={form.email}
           onChange={handleChange}
           onBlur={handleBlur}
-          error={!!errors.mail}
-          helperText={errors.mail}
+          error={!!errors.email}
+          helperText={errors.email}
         />
         <TextField
           className="w-full mb-5"
-          id="mensaje"
+          id="message"
           multiline
           rows={4}
           label="Mensaje"
           variant="outlined"
-          value={form.mensaje}
+          value={form.message}
           onChange={handleChange}
         />
         <div className="flex w-full justify-end">
-          <Button type="submit" variant="contained" disabled={!isFormValid}>Enviar</Button>
+          <Button type="submit" variant="contained" disabled={!isFormValid}>
+            {loading ? (
+              <CircularProgress color="inherit" size={20}/>
+            ):  ('Enviar')}
+          </Button>
         </div>
       </form>
+      {success ? (
+        <Alert className="mt-5" icon={<CheckIcon fontSize="inherit" />} severity="success">
+          El mensaje fue enviado con éxito
+        </Alert>
+      ) : (<></>)}
+      {error ?(
+      <Alert className="mt-5" icon={<ErrorIcon fontSize="inherit" />} severity="error">
+        Hubo un problema enviando el mensaje
+      </Alert>
+      ) : (<></>)
+      }
     </div>
   );
 }
