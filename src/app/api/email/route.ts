@@ -15,7 +15,7 @@ export async function POST(request: NextRequest) {
 
   const mailOptions: Mail.Options = {
     from: process.env.MY_EMAIL,
-    to: process.env.MY_EMAIL,
+    to: process.env.RECIEVING_EMAIL,
     // cc: email, (uncomment this line if you want to send a copy to the sender)
     subject: `Nuevo mensaje de ${name} (${email}) - Portal legislaciones`,
     text: message,
