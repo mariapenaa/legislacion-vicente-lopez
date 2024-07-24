@@ -4,10 +4,10 @@ import SearchResultsHeader from "@/components/SearchResultsHeader";
 import EnhancedTable from "@/components/Table";
 import { Skeleton, Table } from "@mui/material";
 import { useSearchParams } from "next/navigation";
-import { useState } from "react";
+import { Suspense, useState } from "react";
 
 
-export default function Resultados() {
+function ResultadosContent () {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const [types, setTypes] = useState([])
@@ -19,32 +19,39 @@ export default function Resultados() {
   
     return (
       <div className="py-5 px-5 sm:py-12 sm:px-20">
-      <SearchResultsHeader
-          title="Buscar legislaciones"
-          selectOptions={types}
-          loadingTypes={loadingTypes}
-          prevPath="/informacion-diaria"
+        <SearchResultsHeader
+            title="Buscar legislaciones"
+            selectOptions={types}
+            loadingTypes={loadingTypes}
+            prevPath="/informacion-diaria"
+            searchQuery={searchQuery}
+            setSearchQuery={setSearchQuery}
+            selectedFilter={selectedFilter}
+            setSelectedFilter={setSelectedFilter}
+          />
+        <div className="pt-5 mt-2 sm:pt-5 sm:mt-5">
+          {loadingTypes ? (
+            <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={100}/>
+          ): (
+            <p className="text-black text-lg font-dm-sans mb-2">{resultsLength} resultados</p>
+          )}
+          <EnhancedTable
+          setTypes={setTypes}
+          setLoadingTypes={setLoadingTypes}
+          setResultsLength={setResultsLength}
           searchQuery={searchQuery}
-          setSearchQuery={setSearchQuery}
           selectedFilter={selectedFilter}
-          setSelectedFilter={setSelectedFilter}
-        />
-      <div className="pt-5 mt-2 sm:pt-5 sm:mt-5">
-        {loadingTypes ? (
-          <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={100}/>
-        ): (
-          <p className="text-black text-lg font-dm-sans mb-2">{resultsLength} resultados</p>
-        )}
-        <EnhancedTable
-        setTypes={setTypes}
-        setLoadingTypes={setLoadingTypes}
-        setResultsLength={setResultsLength}
-        searchQuery={searchQuery}
-        selectedFilter={selectedFilter}
-        queryParams={{tema, subtema}}
-        />
-      </div>
+          queryParams={{tema, subtema}}
+          />
+        </div>
     </div>
     );
   }
   
+export default function Resultados() {
+  return (
+    <Suspense fallback={<Skeleton variant="rectangular" width="100%" height="100vh" />}>
+      <ResultadosContent />
+    </Suspense>
+  );
+}

@@ -3,9 +3,9 @@ import SearchResultsHeader from '@/components/SearchResultsHeader'
 import EnhancedTable from '@/components/Table'
 import { Skeleton } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
-import React, { useState } from 'react'
+import React, { Suspense, useState } from 'react'
 
-export default function Resultados() {
+function ResultadosContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
   const [types, setTypes] = useState([])
@@ -47,3 +47,10 @@ export default function Resultados() {
   );
   }
   
+  export default function Resultados() {
+    return (
+      <Suspense fallback={<Skeleton variant="rectangular" width="100%" height="100vh" />}>
+        <ResultadosContent />
+      </Suspense>
+    );
+  }
