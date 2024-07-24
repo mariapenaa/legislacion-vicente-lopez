@@ -1,10 +1,10 @@
 // pages/api/temas.js
 
 import { NextResponse } from 'next/server';
-import sequelize from '../../../../config/database';
+/* import sequelize from '../../../../config/database'; */
 import initModels from '../../../../models/init-models';
 
-const models = initModels(sequelize); // Initialize Sequelize models
+/* const models = initModels(sequelize); */
 
 export async function GET() {
   try {

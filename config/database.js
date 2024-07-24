@@ -3,7 +3,7 @@ const { Sequelize } = require('sequelize');
 
 const isDev = process.env.NODE_ENV === 'development';
 console.log(process.env.NODE_ENV)
-let sequelize;
+let sequelize = null
 
 if(!isDev){
   sequelize = null;
