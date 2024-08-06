@@ -24,12 +24,11 @@ export async function GET(request: Request, context: { params: Params }) {
         return NextResponse.error();
     }
     const directoryPath = '/mnt/pdf';
-    const searchPattern = `*${legislacion.cnom_archivo}*.pdf`;
 
     // Read all files in the directory
-    const files = fs.readdirSync(directoryPath);
+    /* const files = fs.readdirSync(directoryPath);
 
-    const matchingFiles = files.filter(file => file.includes(legislacion.cnom_archivo) && file.endsWith('.pdf'));
+    const matchingFiles = files.filter(file => file.includes(legislacion.cnom_archivo));
     console.log('matching files', matchingFiles)
     if (matchingFiles.length > 0) {
       const fileName = matchingFiles[0]; // Assume the first matching file is the one you want
@@ -44,17 +43,14 @@ export async function GET(request: Request, context: { params: Params }) {
           headers: { 'Content-Type': 'application/pdf' },
         });
       }
-    }
-
-    /* console.log('list of files', files);
+    } */
 
     // Define the file name and path
     const { cnom_archivo } = legislacion;
-    const fileName = `10-leg18700.pdf`.trim();
+    const fileName = `${eidlegislacion}-leg${cnom_archivo}.pdf`.trim();
     const filePath = path.join('/mnt/pdf', fileName);
 
     const normalizedFilePath = path.normalize(filePath);
-
 
     if (fs.existsSync(normalizedFilePath)) {
       const fileBuffer = fs.readFileSync(normalizedFilePath);
@@ -67,7 +63,7 @@ export async function GET(request: Request, context: { params: Params }) {
       });
     } else {
       return new NextResponse('File not found', { status: 404 });
-    } */
+    }
 
   } catch (error) {
     // Manejo de errores en caso de falla en la consulta

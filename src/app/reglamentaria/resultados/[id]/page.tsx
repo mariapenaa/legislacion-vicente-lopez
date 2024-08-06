@@ -13,9 +13,13 @@ export default function Page({ params }: { params: { id: string } }) {
             const fetchLegislacion = async () => {
                 try {
                     const response = await fetch(`/api/legislacion/detail/${params.id}`);
+                    console.log('response:')
+                    console.log(response);
                     if (response.ok) {
                         const blob = await response.blob();
+                        console.log('blob', blob);
                         const url = URL.createObjectURL(blob);
+                        console.log('url', url);
                         setPdfUrl(url);
                     } else {
                         console.error('Error fetching legislacion:', response.statusText);
