@@ -1,36 +1,124 @@
-This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Legislacion 2024 Project Deployment Guide
 
-## Getting Started
+This guide provides a step-by-step procedure to upload, build, and start the Legislacion 2024 project on a VM using PM2. It also includes additional information on how to manage the application once it's running.
 
-First, run the development server:
+## Table of Contents
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+1. [Prerequisites](#prerequisites)
+2. [Uploading the Project](#uploading-the-project)
+3. [Building the Project](#building-the-project)
+4. [Starting the Project with PM2](#starting-the-project-with-pm2)
+5. [Managing the Project](#managing-the-project)
+6. [Additional Information](#additional-information)
+
+## Prerequisites
+
+- Access to the VM.
+- Git installed on your local machine and the VM.
+- Node.js and npm installed on the VM. Node should be version 20 or higher.
+- PM2 installed on the VM.
+- SSH access to the VM.
+
+## Uploading the Project
+
+1. **Connect to the VM via SSH**:
+```
+bash
+ssh your-username@vm-ip-address
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+2. **Clone the Project Repository**:
+Navigate to the directory where you want to clone the project (e.g., /opt).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+````
+cd /opt
+sudo git clone https://git.vicentelopez.gov.ar/gob/legislacion-2024.git legislacion2024
+cd legislacion2024
+````
 
-This project uses [`next/font`](https://nextjs.org/docs/basic-features/font-optimization) to automatically optimize and load Inter, a custom Google Font.
+3. **Transfer the .env File**:
+On your local machine, use SCP to transfer the .env file to the VM.
 
-## Learn More
+````
+scp /path/to/your/local/.env your-username@vm-ip-address:/opt/legislacion2024/.env
+````
+Ensure the .env file is correctly placed in the project directory (/opt/legislacion2024/).
 
-To learn more about Next.js, take a look at the following resources:
+## Building the project
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+1. **Navigate to project directory**
+````
+cd /opt/legislacion2024
+````
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js/) - your feedback and contributions are welcome!
+2. **Install project dependencies**
+````
+npm install
+````
 
-## Deploy on Vercel
+3. **Install dotenv package**
+````
+npm install dotenv
+````
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+4. **Build the project**
+````
+npm run build
+````
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/deployment) for more details.
+## Starting the Project with PM2
+To start the project, run:
+````
+pm2 start npm --name "legislacion2024" -- start
+````
+
+You can verify the PM2 status with:
+````
+pm2 status
+
+````
+
+## Managing the project
+To stop de running PM2 process:
+````
+pm2 stop legislacion2024
+````
+
+To restart the process
+````
+pm2 restart legislacion2024
+
+````
+To view the logs:
+````
+pm2 logs legislacion2024
+````
+
+To check the PM2 status
+````
+pm2 status
+
+````
+
+## Additional information
+
+# Updating the project:
+1. **Pull the latest changes**
+````
+cd /opt/legislacion2024
+sudo git pull
+````
+
+2. **Install project dependencies and rebuild**
+````
+npm install
+npm run build
+````
+
+3. **Restart the project**
+````
+pm2 restart legislacion2024
+````
+
+## Accessing the application
+Open your web browser and navigate to http://vm-ip-address:3000 to access the application.
