@@ -29,7 +29,24 @@ export async function GET(request: Request, context: { params: Params }) {
     // Read all files in the directory
     const files = fs.readdirSync(directoryPath);
 
-    console.log('list of files', files);
+    const matchingFiles = files.filter(file => file.includes(legislacion.cnom_archivo) && file.endsWith('.pdf'));
+    console.log('matching files', matchingFiles)
+    if (matchingFiles.length > 0) {
+      const fileName = matchingFiles[0]; // Assume the first matching file is the one you want
+      const filePath = path.join(directoryPath, fileName);
+
+      const normalizedFilePath = path.normalize(filePath);
+
+      if (fs.existsSync(normalizedFilePath)) {
+        const fileBuffer = fs.readFileSync(normalizedFilePath);
+        return new NextResponse(fileBuffer, {
+          status: 200,
+          headers: { 'Content-Type': 'application/pdf' },
+        });
+      }
+    }
+
+    /* console.log('list of files', files);
 
     // Define the file name and path
     const { cnom_archivo } = legislacion;
@@ -50,7 +67,8 @@ export async function GET(request: Request, context: { params: Params }) {
       });
     } else {
       return new NextResponse('File not found', { status: 404 });
-    }
+    } */
+
   } catch (error) {
     // Manejo de errores en caso de falla en la consulta
     console.error('Error al obtener la legislacion:', error);
