@@ -29,11 +29,11 @@ export async function GET(request: Request, context: { params: Params }) {
     // Read all files in the directory
     const files = fs.readdirSync(directoryPath);
 
-    console.log(files);
+    console.log('list of files', files);
 
     // Define the file name and path
     const { cnom_archivo } = legislacion;
-    const fileName = `${eidlegislacion}-leg${cnom_archivo}.pdf`.trim();
+    const fileName = `10-leg18700.pdf`.trim();
     const filePath = path.join('/mnt/pdf', fileName);
 
     const normalizedFilePath = path.normalize(filePath);
