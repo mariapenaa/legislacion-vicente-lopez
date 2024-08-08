@@ -42,7 +42,7 @@ export default function Page({ params }: { params: { id: string } }) {
                         height="70vh"
                     />
                 ) : pdfUrl ? (
-                    <embed
+                    <iframe
                         src={pdfUrl}
                         style={{ width: '100%', height: '70vh' }}
                     />
