@@ -19,6 +19,7 @@ import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedLeg, Legislacion } from '@/utils/legislacion.interface';
 import { Skeleton } from '@mui/material';
+import { DateTime } from 'luxon';
 
 interface Data {
   id: number;
@@ -186,6 +187,16 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
 
+  const formatDate = (datetime: string) => {
+    const date = new Date(datetime);
+    const formattedDate = date.toLocaleDateString('es-ES', {
+      day: '2-digit',
+      month: '2-digit',
+      year: 'numeric',
+    });
+    
+    return formattedDate
+  }
   useEffect(()=>{
     setLoading(true)
     setLoadingTypes(true)
@@ -195,7 +206,7 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
         const response = await fetch(`/api/legislacion/${tema}/${subtema}`);
         if (response.ok) {
           const data = await response.json();
-          const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date:leg.fecha_ing, publication: "Ver publicación" }));
+          const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date:formatDate(leg.fecha_ing), publication: "Ver publicación" }));
           setLegislaciones(formattedData);
           const uniqueTypes = Array.from(new Set(formattedData.map((legislacion: FormattedLeg) => legislacion.type)));
           console.log(uniqueTypes)

@@ -2,6 +2,7 @@
 import Breadcrumb from "@/components/Breadcrumb";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
+import Skeleton from '@mui/material/Skeleton';
 
 export default function Page({ params }: { params: { id: string } }) {
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -13,13 +14,9 @@ export default function Page({ params }: { params: { id: string } }) {
             const fetchLegislacion = async () => {
                 try {
                     const response = await fetch(`/api/legislacion/detail/${params.id}`);
-                    console.log('response:')
-                    console.log(response);
                     if (response.ok) {
                         const blob = await response.blob();
-                        console.log('blob', blob);
                         const url = URL.createObjectURL(blob);
-                        console.log('url', url);
                         setPdfUrl(url);
                     } else {
                         console.error('Error fetching legislacion:', response.statusText);
@@ -39,7 +36,11 @@ export default function Page({ params }: { params: { id: string } }) {
             <Breadcrumb />
             <div className="flex justify-center w-full mt-5">
                 {loading ? (
-                    <p>Loading...</p>
+                    <Skeleton
+                        variant="rectangular"
+                        width="100%"
+                        height="70vh"
+                    />
                 ) : pdfUrl ? (
                     <embed
                         src={pdfUrl}

@@ -15,6 +15,12 @@ type Params = {
     eidlegislacion: string
 }
 
+function extractFileName(input: string) {
+  const start = input.indexOf('@') + 1;  // Find the position after '@'
+  const end = input.indexOf('.pdf') + 4; // Find the position after '.pdf'
+  return input.slice(start, end);  // Extract the substring from start to end
+}
+
 export async function GET(request: Request, context: { params: Params }) {
   const { eidlegislacion } = context.params
 
@@ -46,10 +52,9 @@ export async function GET(request: Request, context: { params: Params }) {
     } */
 
     // Define the file name and path
-    const { cnom_archivo } = legislacion;
-    const fileName = `${eidlegislacion}-leg${cnom_archivo}.pdf`.trim();
-    const filePath = path.join('/mnt/pdf', fileName);
-
+    const { pares } = legislacion;
+    const fileName = extractFileName(pares)
+    const filePath = path.join(directoryPath, fileName);
     const normalizedFilePath = path.normalize(filePath);
 
     if (fs.existsSync(normalizedFilePath)) {
