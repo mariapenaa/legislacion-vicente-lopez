@@ -44,7 +44,6 @@ export default function Page({ params }: { params: { id: string } }) {
                 ) : pdfUrl ? (
                     <embed
                         src={pdfUrl}
-                        type="application/pdf"
                         style={{ width: '100%', height: '70vh' }}
                     />
                 ) : (
