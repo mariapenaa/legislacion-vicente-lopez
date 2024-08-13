@@ -1,4 +1,4 @@
-"use client";
+'use client';
 import Breadcrumb from "@/components/Breadcrumb";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
@@ -6,6 +6,7 @@ import Skeleton from '@mui/material/Skeleton';
 
 export default function Page({ params }: { params: { id: string } }) {
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
+    const [legislacionDetails, setLegislacionDetails] = useState<any>(null); // Adjust type as needed
     const [loading, setLoading] = useState(true);
 
     useEffect(() => {
@@ -15,9 +16,10 @@ export default function Page({ params }: { params: { id: string } }) {
                 try {
                     const response = await fetch(`/api/legislacion/detail/${params.id}`);
                     if (response.ok) {
-                        const blob = await response.blob();
-                        const url = URL.createObjectURL(blob);
-                        setPdfUrl(url);
+                        const data = await response.json();
+                        setPdfUrl(data.pdfUrl);
+                        console.log(data)
+                        setLegislacionDetails(data.legislacion);
                     } else {
                         console.error('Error fetching legislacion:', response.statusText);
                     }
@@ -33,7 +35,12 @@ export default function Page({ params }: { params: { id: string } }) {
 
     return (
         <div className="py-5 px-5 sm:py-12 sm:px-20">
-            <Breadcrumb />
+            {loading ? (
+                <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={100}/>
+            ): (
+                <Breadcrumb secondItemRoute={`/informacion-diaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`} lastItem={`${legislacionDetails.ctitulo}`} />
+            )}
+
             <div className="flex justify-center w-full mt-5">
                 {loading ? (
                     <Skeleton
@@ -42,11 +49,13 @@ export default function Page({ params }: { params: { id: string } }) {
                         height="70vh"
                     />
                 ) : pdfUrl ? (
-                    <embed
-                        src={pdfUrl}
-                        type="application/pdf"
-                        style={{ width: '100%', height: '70vh' }}
-                    />
+                    <>
+                        <embed
+                            src={pdfUrl}
+                            type="application/pdf"
+                            style={{ width: '100%', height: '70vh' }}
+                        />
+                    </>
                 ) : (
                     <p>No PDF available</p>
                 )}

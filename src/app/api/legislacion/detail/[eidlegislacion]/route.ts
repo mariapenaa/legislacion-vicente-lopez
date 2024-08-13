@@ -1,5 +1,4 @@
-// Importa los modelos necesarios y Sequelize si es necesario
-import initModels from '../../../../../../models/init-models';// Ajusta la importación según tu estructura de archivos y modelos
+import initModels from '../../../../../../models/init-models';
 import sequelize from '../../../../../../config/database';
 import { NextResponse } from 'next/server';
 import fs from 'fs';
@@ -31,48 +30,30 @@ export async function GET(request: Request, context: { params: Params }) {
     }
     const directoryPath = '/mnt/pdf';
 
-    // Read all files in the directory
-    /* const files = fs.readdirSync(directoryPath);
-
-    const matchingFiles = files.filter(file => file.includes(legislacion.cnom_archivo));
-    console.log('matching files', matchingFiles)
-    if (matchingFiles.length > 0) {
-      const fileName = matchingFiles[0]; // Assume the first matching file is the one you want
-      const filePath = path.join(directoryPath, fileName);
-
-      const normalizedFilePath = path.normalize(filePath);
-
-      if (fs.existsSync(normalizedFilePath)) {
-        const fileBuffer = fs.readFileSync(normalizedFilePath);
-        return new NextResponse(fileBuffer, {
-          status: 200,
-          headers: { 'Content-Type': 'application/pdf' },
-        });
-      }
-    } */
-
     // Define the file name and path
     const { pares } = legislacion;
     const fileName = extractFileName(pares)
     const filePath = path.join(directoryPath, fileName);
     const normalizedFilePath = path.normalize(filePath);
 
+    let fileBuffer = null;
     if (fs.existsSync(normalizedFilePath)) {
-      const fileBuffer = fs.readFileSync(normalizedFilePath);
-      return new NextResponse(fileBuffer, {
-        status: 200,
-        headers: {
-          'Content-Type': 'application/pdf',
-          'Content-Disposition': `inline; filename="${fileName}"`
-        },
-      });
-    } else {
-      return new NextResponse('File not found', { status: 404 });
+      fileBuffer = fs.readFileSync(normalizedFilePath);
     }
 
+    return new NextResponse(JSON.stringify({
+      pdfUrl: fileBuffer ? `data:application/pdf;base64,${fileBuffer.toString('base64')}` : null,
+      legislacion,
+    }), {
+      status: 200,
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    });
+
   } catch (error) {
-    // Manejo de errores en caso de falla en la consulta
-    console.error('Error al obtener la legislacion:', error);
+    // Error handling
+    console.error('Error retrieving legislacion:', error);
     return NextResponse.error();
   }
 }
