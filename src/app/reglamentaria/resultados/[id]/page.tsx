@@ -18,7 +18,6 @@ export default function Page({ params }: { params: { id: string } }) {
                     if (response.ok) {
                         const data = await response.json();
                         setPdfUrl(data.pdfUrl);
-                        console.log(data)
                         setLegislacionDetails(data.legislacion);
                     } else {
                         console.error('Error fetching legislacion:', response.statusText);

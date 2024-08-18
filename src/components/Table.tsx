@@ -209,7 +209,6 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
           const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date:formatDate(leg.fecha_ing), publication: "Ver publicación" }));
           setLegislaciones(formattedData);
           const uniqueTypes = Array.from(new Set(formattedData.map((legislacion: FormattedLeg) => legislacion.type)));
-          console.log(uniqueTypes)
           setTypes(uniqueTypes)
           setLoading(false)
           setLoadingTypes(false)

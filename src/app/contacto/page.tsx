@@ -68,7 +68,7 @@ export default function Contacto() {
       return;
     }
     const apiEndpoint = '/api/email';
-    console.log(form)
+
     fetch(apiEndpoint, {
       method: 'POST',
       body: JSON.stringify(form),

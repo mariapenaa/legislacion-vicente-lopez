@@ -1,5 +1,5 @@
 import type { Metadata } from "next";
-import { Inter, Poppins } from "next/font/google";
+import { Inter, Poppins, Bricolage_Grotesque, Cabin } from "next/font/google";
 import "../styles/globals.css";
 import Header from "@/components/Header";
 import { Container, ThemeProvider } from "@mui/material";
