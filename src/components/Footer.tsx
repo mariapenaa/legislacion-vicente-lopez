@@ -11,8 +11,8 @@ export default function Footer() {
             <p className={`footer-subtitle ${josefin.className}`}></p>
             <div className="bg-gradient-to-r from-[#54317F] to-[#7C2C79] w-full h-2"></div>
             <div className="bg-[#ececec]">
-                <div className="flex py-8 px-7 flex-col lg:flex-row lg:justify-between">
-                    <div className="px-4 w-full sm:w-1/2 md:w-full flex-col sm:flex-row flex sm:justify-start md:justify-between ">
+                <div className="flex py-8 px-6 flex-col lg:flex-row lg:justify-between">
+                    <div className="px-4 w-full sm:w-1/2 md:w-full flex-col sm:flex-row flex md:justify-start justify-between">
                         <div className="sm:w-1/4 px-4 lg:mb-0">
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} text-center sm:text-left`}>Datos del municipio</h4>
@@ -27,7 +27,7 @@ export default function Footer() {
                         <div className="sm:w-1/3  px-4  lg:mb-0">
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} bricolage-grotesque text-center sm:text-left`}>Email</h4>
-                                <p className={`footer-subtitle ${josefin.className} text-center sm:text-left`}>digesto@vicentelopez.gov.ar</p>
+                                <a href="mailto:digesto@vicentelopez.gov.ar" className={`footer-subtitle ${josefin.className} text-center flex justify-center sm:justify-start`}>digesto@vicentelopez.gov.ar</a>
                             </div>
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} bricolage-grotesque text-center sm:text-left`}>Teléfono</h4>
@@ -37,11 +37,11 @@ export default function Footer() {
                         <div className="sm:w-1/4 px-4  lg:mb-0">
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} bricolage-grotesque text-center sm:text-left`}>Validador Blockchain</h4>
-                                <p className={`footer-subtitle ${josefin.className} text-center sm:text-left`}>Valide los boletines en blockchain</p>
+                                <a href="https://www.vicentelopez.gov.ar/boletin_oficial/verify" target="_blank" className={`footer-subtitle ${josefin.className} text-center flex justify-center sm:justify-startt`}>Valide los boletines en blockchain</a>
                             </div>
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} bricolage-grotesque text-center sm:text-left`}>Web</h4>
-                                <p className={`footer-subtitle ${josefin.className} text-center sm:text-left`}>https://www.vicentelopez.gov.ar</p>
+                                <a href="https://www.vicentelopez.gov.ar/" target="_blank" className={`footer-subtitle ${josefin.className} text-center flex justify-center sm:justify-start`}>https://www.vicentelopez.gov.ar</a>
                             </div>
                         </div>
                     </div>
@@ -79,10 +79,8 @@ export default function Footer() {
                     </div>
                 </div>
             </div>
-            <div style={styles.backgroundBlack} className="w-full relative h-24">
-                <Image src="/logo-mvl.png" alt="Logo" 
-                fill={true}
-                objectFit="contain" />
+            <div style={styles.backgroundBlack} className="w-full relative flex justify-center p-5">
+                <img src="/logo-footer.png" alt="Logo" />
             </div>
             <div style={styles.backgroundGreen} className="w-full h-2"></div>
         </footer>

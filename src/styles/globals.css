@@ -53,7 +53,7 @@ p {
 .footer-title {
   color: #a0a09d;
   margin: 0;
-  font-size: 0.9rem;
+  font-size: 1rem;
   text-transform: uppercase;
 }
 
@@ -62,6 +62,7 @@ p {
   color:#a0a09d;
   font-weight:300;
 }
+
 
 .footer-number {
   font-size: 34px;
