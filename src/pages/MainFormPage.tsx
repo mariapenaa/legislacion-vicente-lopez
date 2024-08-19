@@ -1,7 +1,7 @@
 'use client';
 
 import { SubTema } from "@/utils/subtema.interface";
-import { FormControl, InputLabel, MenuItem, Select, Button, Skeleton } from "@mui/material";
+import { FormControl, InputLabel, MenuItem, Select, Button, Skeleton, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
 
@@ -11,17 +11,20 @@ interface InformacionFormProps {
   temaOptions: TemaOptions[];
   route: string;
   loadingTemas: boolean;
+  firstSearchLabel: string;
+  displaySearchFilter: boolean;
 }
 
 export interface TemaOptions {
   value: string | number;
-  label: string
+  label: string;
 }
 
-export default function MainFormPage({ title, subtitle, temaOptions, route, loadingTemas }: InformacionFormProps) {
+export default function MainFormPage({ title, subtitle, temaOptions, route, loadingTemas, firstSearchLabel, displaySearchFilter }: InformacionFormProps) {
   const router = useRouter();
   const [tema, setTema] = useState('');
   const [subtema, setSubtema] = useState('');
+  const [nombre, setNombre] = useState('')
   const [subtemaOptions, setSubtemaOptions] = useState([]);
   const [loadingSubTemas, setLoadingSubTemas] = useState(false);
 
@@ -35,8 +38,14 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
     setSubtema(event.target.value);
   };
 
+  const handleStringChange = (e: any) => {
+    const { id, value } = e.target;
+    setNombre(value)
+  };
+
   const handleButtonClick = () => {
-    const queryString = new URLSearchParams({ tema, subtema }).toString();
+    console.log(nombre)
+    const queryString = new URLSearchParams({ tema, subtema, nombre }).toString();
     router.push(`${route}?${queryString}`);
   };
 
@@ -68,7 +77,7 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
         </div>
         <div className="shadow-lg flex-col bg-white sm:p-8 p-5 rounded-[10px] sm:mt-12 md:mt-8 mt-2">
           <div className="mb-5 sm:mb-8">
-            <p className="text-md sm:text-xl">Seleccione el tema que quiere consultar</p>
+            <p className="text-md sm:text-xl">{firstSearchLabel}</p>
               {loadingTemas ? (
                   <Skeleton variant="rectangular" width="100%" height={52} />
                 ) : (
@@ -104,6 +113,7 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
                   value={subtema}
                   onChange={handleSubtemaChange}
                 >
+                    <MenuItem value="all"><b>VER TODO</b></MenuItem>
                   {subtemaOptions?.map((option: any) => (
                     <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
                   ))}
@@ -112,8 +122,16 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
               )
             }
           </div>
+          {displaySearchFilter ? (
+            <div className="mb-5 sm:mb-8">
+              <p className="text-md sm:text-xl">Búsqueda por palabra</p>
+              <TextField onChange={handleStringChange} value={nombre} className="w-full mt-2 sm:mt-5" label="Nombre de la legislación" variant="outlined" />
+            </div>
+          ): (
+            <></>
+          )}
           <div className="flex justify-end">
-            <Button variant="contained" disabled={!subtema || !tema} onClick={handleButtonClick}>Buscar</Button>
+            <Button variant="contained" disabled={(!subtema || !tema) && nombre === ''} onClick={handleButtonClick}>Buscar</Button>
           </div>
         </div>
       </div>

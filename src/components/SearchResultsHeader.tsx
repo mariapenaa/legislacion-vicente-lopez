@@ -12,6 +12,7 @@ interface SearchResultsHeaderProps {
   setSearchQuery: any;
   selectedFilter: string;
   loadingTypes: boolean;
+  displaySearchSelect: boolean;
   setSelectedFilter: React.Dispatch<React.SetStateAction<string>>;
 }
 
@@ -23,6 +24,7 @@ const SearchResultsHeader: React.FC<SearchResultsHeaderProps> = ({
   setSearchQuery,
   selectedFilter,
   loadingTypes,
+  displaySearchSelect,
   setSelectedFilter}) => {
   const paths = usePathname();
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -52,28 +54,35 @@ const SearchResultsHeader: React.FC<SearchResultsHeaderProps> = ({
           }}
           variant="outlined"
         />
-        {loadingTypes ? (
-          <Skeleton variant="rectangular"  className="w-full ml-2 sm:w-80" height={54} />
-        ) : (
-          <FormControl className="m-0 w-full sm:w-80">
-            <Select
-              className="bg-white"
-              value={selectedFilter}
-              onChange={handleFilterChange}
-              displayEmpty
-              inputProps={{ 'aria-label': 'Without label' }}
-            >
-              <MenuItem value="">
-                <p className='input-text'>Seleccione un tema</p>
-              </MenuItem>
-              {selectOptions.map((option) => (
-                <MenuItem key={option} value={option}>
-                  {option}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
+        {displaySearchSelect ? (
+          <>
+            {loadingTypes ? (
+              <Skeleton variant="rectangular"  className="w-full ml-2 sm:w-80" height={54} />
+            ) : (
+              <FormControl className="m-0 w-full sm:w-80">
+                <Select
+                  className="bg-white"
+                  value={selectedFilter}
+                  onChange={handleFilterChange}
+                  displayEmpty
+                  inputProps={{ 'aria-label': 'Without label' }}
+                >
+                  <MenuItem value="">
+                    <p className='input-text'>Seleccione una normativa</p>
+                  </MenuItem>
+                  {selectOptions.map((option) => (
+                    <MenuItem key={option} value={option}>
+                      {option}
+                    </MenuItem>
+                  ))}
+                </Select>
+              </FormControl>
+            )}
+          </>
+        ): (
+          <></>
         )}
+       
       </div>
       <div>
         <Link href={prevPath} className="cursor-pointer underline text-[#762D7B] text-md mt-2 font-dm-sans">Seleccionar un nuevo tema</Link>

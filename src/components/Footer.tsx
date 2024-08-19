@@ -37,7 +37,7 @@ export default function Footer() {
                         <div className="sm:w-1/4 px-4  lg:mb-0">
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} bricolage-grotesque text-center sm:text-left`}>Validador Blockchain</h4>
-                                <a href="https://www.vicentelopez.gov.ar/boletin_oficial/verify" target="_blank" className={`footer-subtitle ${josefin.className} text-center flex justify-center sm:justify-startt`}>Valide los boletines en blockchain</a>
+                                <a href="https://www.vicentelopez.gov.ar/boletin_oficial/verify" target="_blank" className={`footer-subtitle ${josefin.className} text-center flex justify-center sm:justify-start sm:text-left`}>Valide los boletines en blockchain</a>
                             </div>
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} bricolage-grotesque text-center sm:text-left`}>Web</h4>

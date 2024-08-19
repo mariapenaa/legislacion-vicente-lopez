@@ -124,7 +124,7 @@ h3 {
 
 @media screen and (min-height: 700px) {
   .child-container {
-    min-height:100vh;
+    min-height:105vh;
   }
 }
 
@@ -141,8 +141,15 @@ h3 {
   }
 }
 
+
 @media screen and (max-width: 1025px) {
   .child-container {
     min-height:120vh;
+  }
+}
+
+@media screen and (max-width: 1000px) {
+  .child-container {
+    min-height:90vh;
   }
 }

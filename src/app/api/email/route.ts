@@ -4,7 +4,6 @@ import Mail from 'nodemailer/lib/mailer';
 
 export async function POST(request: NextRequest) {
   const { email, name, message } = await request.json();
-
   const transport = nodemailer.createTransport({
     service: 'gmail',
     auth: {
@@ -12,7 +11,6 @@ export async function POST(request: NextRequest) {
       pass: process.env.MY_PASSWORD,
     },
   });
-
   const mailOptions: Mail.Options = {
     from: process.env.MY_EMAIL,
     to: process.env.RECIEVING_EMAIL,

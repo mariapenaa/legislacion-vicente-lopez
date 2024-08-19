@@ -20,6 +20,7 @@ function ResultadosContent () {
     return (
       <div className="py-5 px-5 sm:py-12 sm:px-20">
         <SearchResultsHeader
+            displaySearchSelect={false}
             title="Buscar legislaciones"
             selectOptions={types}
             loadingTypes={loadingTypes}

@@ -20,6 +20,7 @@ import { useEffect, useMemo, useState } from 'react';
 import { FormattedLeg, Legislacion } from '@/utils/legislacion.interface';
 import { Skeleton } from '@mui/material';
 import { DateTime } from 'luxon';
+import Contacto from '@/app/contacto/page';
 
 interface Data {
   id: number;
@@ -170,7 +171,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
 interface EnhancedTableProps {
   searchQuery: string;
   selectedFilter: string;
-  queryParams: {tema: any, subtema: any},
+  queryParams: {tema: any, subtema: any, nombre?:any},
   setTypes: any;
   setLoadingTypes: any
   setResultsLength: any
@@ -200,10 +201,15 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
   useEffect(()=>{
     setLoading(true)
     setLoadingTypes(true)
-    const { tema, subtema } = queryParams
+    const { tema, subtema, nombre } = queryParams
     const fetchTemas = async () => {
       try {
-        const response = await fetch(`/api/legislacion/${tema}/${subtema}`);
+        let response;
+        if (nombre) {
+          response = await fetch(`/api/legislacion/nombre/${nombre}`);
+        } else {
+          response = await fetch(`/api/legislacion/${tema}/${subtema}`);
+        }
         if (response.ok) {
           const data = await response.json();
           const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date:formatDate(leg.fecha_ing), publication: "Ver publicación" }));
@@ -283,7 +289,6 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
         );
       });
     }, [searchQuery, selectedFilter, legislaciones]);
-  
     const visibleRows = useMemo(() => {
       return stableSort(filteredRows, getComparator(order, orderBy)).slice(
         page * rowsPerPage,
@@ -291,6 +296,10 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
       );
     }, [order, orderBy, page, rowsPerPage, filteredRows]);
 
+    useEffect(() => {
+      setResultsLength(filteredRows.length);
+    }, [filteredRows.length, setResultsLength]);
+    
   return (
     <Box sx={{ width: '100%' }}>
       <Paper sx={{ width: '100%', mb: 2 }}>
@@ -309,6 +318,13 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
               rowCount={legislaciones.length}
             />
             <TableBody>
+              {filteredRows.length === 0 && !loading ? (
+              <TableRow>
+                <TableCell colSpan={5} align="center">
+                  <Contacto displayTitle={false} subtitle="No hay resultados para tu búsqueda, contáctenos para más información"/>
+                </TableCell>
+              </TableRow>
+              ): (null)}
               {loading ? (
                 Array.from({ length: 4 }).map((_, index) => (
                   <TableRow key={index}>

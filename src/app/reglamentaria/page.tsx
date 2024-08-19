@@ -1,5 +1,5 @@
 "use client";
-import MainFormPage from "@/pages/MainFormPage";
+import MainFormPage, { TemaOptions } from "@/pages/MainFormPage";
 import { Tema } from "@/utils/tema.interface";
 import { useState, useEffect } from "react";
 
@@ -16,7 +16,12 @@ export default function Reglamentaria() {
         if (response.ok) {
           const data = await response.json();
           const formattedData = data.map((tema: Tema) => ({ value: tema.eidtema, label: tema.ctema }));
-          setTemaOptions(formattedData);
+          const correspondingTemas = formattedData.filter((tema: TemaOptions) => 
+            !tema.label.includes('DECRETOS D.E.') && 
+            !tema.label.includes('ORDENANZAS') && 
+            !tema.label.includes('RESOLUCIONES D.E.')
+          );
+          setTemaOptions(correspondingTemas);
           setLoadingTemas(false)
         } else {
           console.error('Error fetching temas:', response.statusText);
@@ -30,6 +35,8 @@ export default function Reglamentaria() {
 
   return (
     <MainFormPage
+      displaySearchFilter={true}
+      firstSearchLabel="Seleccione el tema que quiere consultar"
       title="Reglamentario"
       subtitle="Consultá de manera simple y ágil la reglamentación"
       temaOptions={temaOptions}

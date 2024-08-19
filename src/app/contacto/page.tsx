@@ -5,7 +5,11 @@ import { Alert, Button, TextField, formControlClasses, CircularProgress } from "
 import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/Error';
 
-export default function Contacto() {
+export interface ContactoProps {
+  subtitle?: string,
+  displayTitle?: boolean,
+}
+export default function Contacto({subtitle, displayTitle}: ContactoProps) {
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -18,6 +22,8 @@ export default function Contacto() {
   });
   const [loading, setLoading] = useState(false)
   const [isFormValid, setIsFormValid] = useState(false);
+  if(!subtitle) subtitle = "¿Necesitas ayuda con algo? Ponete en contacto con nuestro equipo"
+  if(displayTitle === undefined) displayTitle = true
 
   useEffect(() => {
     const { name, email, message } = form;
@@ -96,9 +102,9 @@ export default function Contacto() {
   };
 
   return (
-    <div className="py-5 px-5 md:py-10 sm:py-12  md:px-60 sm:px-96">
-      <h2 className="text-3xl sm:text-6xl">¡Contáctanos!</h2>
-      <h3 className="mt-2 sm:text-3xl sm:mt-5">¿Necesitas ayuda con algo? Ponete en contacto con nuestro equipo</h3>
+    <div className="py-5 px-5 md:py-10 sm:py-12  md:px-10 lg:px-60 sm:px-96">
+      {displayTitle ? <h2 className="text-3xl sm:text-6xl">¡Contáctanos!</h2> : <></>}
+      <h3 className="mt-2 sm:text-3xl sm:mt-5">{subtitle}</h3>
       <form onSubmit={handleSubmit} className="p-5 sm:p-10 mt-5 rounded shadow bg-white flex flex-col items-start justify-center">
         <TextField
           className="w-full mb-5"

@@ -30,6 +30,8 @@ export default function InformacionDiaria() {
 
   return (
     <MainFormPage
+      displaySearchFilter={false}
+      firstSearchLabel="Seleccione el tipo de normativa que quiere consultar"
       title="Informacion Diaria"
       subtitle="Consultá de manera simple y ágil la información diaria"
       temaOptions={temaOptions}

@@ -14,11 +14,12 @@ function ResultadosContent() {
   const searchParams = useSearchParams();
   const tema = searchParams?.get('tema');
   const subtema = searchParams?.get('subtema');
-
+  const nombre = searchParams?.get('nombre');
 
   return (
     <div className="py-5 px-5 sm:py-12 sm:px-20">
       <SearchResultsHeader
+          displaySearchSelect={true}
           title="Buscar legislaciones"
           selectOptions={types}
           loadingTypes={loadingTypes}
@@ -40,7 +41,7 @@ function ResultadosContent() {
         searchQuery={searchQuery}
         setResultsLength={setResultsLength}
         selectedFilter={selectedFilter}
-        queryParams={{tema, subtema}}
+        queryParams={{tema, subtema, nombre}}
         />
       </div>
     </div>
