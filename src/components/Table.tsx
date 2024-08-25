@@ -21,6 +21,7 @@ import { FormattedLeg, Legislacion } from '@/utils/legislacion.interface';
 import { Skeleton } from '@mui/material';
 import { DateTime } from 'luxon';
 import Contacto from '@/app/contacto/page';
+import FileOpenIcon from '@mui/icons-material/FileOpen';
 
 interface Data {
   id: number;
@@ -93,7 +94,7 @@ interface HeadCell {
   numeric: boolean;
 }
 
-const headCells: readonly HeadCell[] = [
+const headCells:HeadCell[] = [
   {
     id: 'name',
     numeric: false,
@@ -127,22 +128,31 @@ interface EnhancedTableHeadProps {
   order: Order;
   orderBy: string;
   rowCount: number;
+  displayDate: boolean,
 }
 
 function EnhancedTableHead(props: EnhancedTableHeadProps) {
-  const { order, orderBy, numSelected, rowCount, onRequestSort } =
+  const { order, orderBy, numSelected, rowCount, onRequestSort, displayDate } =
     props;
   const createSortHandler =
     (property: keyof Data) => (event: React.MouseEvent<unknown>) => {
       onRequestSort(event, property);
     };
 
+    const derivedHeadCells = useMemo(() => {
+      const cells = [...headCells];
+      if (!displayDate) {
+        return cells.filter(cell => cell.id !== 'date');
+      }
+      return cells;
+    }, [displayDate]);
+  
   return (
     <TableHead>
       <TableRow>
         <TableCell padding="checkbox">
         </TableCell>
-        {headCells.map((headCell) => (
+        {derivedHeadCells.map((headCell) => (
           <TableCell
             key={headCell.id}
             align={headCell.numeric ? 'right' : 'left'}
@@ -187,6 +197,15 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
   const [legislaciones, setLegislaciones] = useState([]);
   const [loading, setLoading] = useState(true);
   const pathname = usePathname();
+  let typeInformacionDiaria = false;
+
+  const pathNames = pathname?.split('/').filter(path => path)
+  if(pathNames && pathNames.length > -1){
+    const first = pathNames[0]
+    typeInformacionDiaria = first === 'informacion-diaria' ? true : false
+  }
+  
+
 
   const formatDate = (datetime: string) => {
     const date = new Date(datetime);
@@ -205,14 +224,18 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
     const fetchTemas = async () => {
       try {
         let response;
+        const params = new URLSearchParams();
+        params.append('type', typeInformacionDiaria ? 'informacion-diaria' : 'reglamentaria');
         if (nombre) {
-          response = await fetch(`/api/legislacion/nombre/${nombre}`);
+          if (tema) params.append('tema', tema);
+          if (subtema) params.append('subtema', subtema);
+          response = await fetch(`/api/legislacion/nombre/${nombre}?${params.toString()}`);
         } else {
           response = await fetch(`/api/legislacion/${tema}/${subtema}`);
         }
         if (response.ok) {
           const data = await response.json();
-          const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date:formatDate(leg.fecha_ing), publication: "Ver publicación" }));
+          const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date:formatDate(leg.fecha_ing) }));
           setLegislaciones(formattedData);
           const uniqueTypes = Array.from(new Set(formattedData.map((legislacion: FormattedLeg) => legislacion.type)));
           setTypes(uniqueTypes)
@@ -310,6 +333,7 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
             size={'medium'}
           >
             <EnhancedTableHead
+              displayDate={!typeInformacionDiaria}
               numSelected={selected.length}
               order={order}
               orderBy={orderBy}
@@ -361,10 +385,10 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
                         {row.name}
                       </TableCell>
                       <TableCell align="right">{row.type}</TableCell>
-                      <TableCell align="right">{row.date}</TableCell>
+                      { !typeInformacionDiaria ?  <TableCell align="right" >{row.date}</TableCell> : <></>}
                       <TableCell align="right">
                         <Link className="underline flex justify-end" href={`${pathname}/${row.id}`} passHref>
-                          {row.publication}
+                          <FileOpenIcon sx={{ color: '#959595' }}/>
                         </Link>
                       </TableCell>
                     </TableRow>

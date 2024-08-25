@@ -28,6 +28,10 @@ export async function GET(request: Request, context: { params: Params }) {
     if (!legislacion) {
         return NextResponse.error();
     }
+    const {eidtema, eidsubtema} = legislacion
+    const {ctema} = await models.leg_temas.findByPk(eidtema)
+    const {csubtema} = await models.leg_subtemas.findByPk(eidsubtema)
+    
     const directoryPath = '/mnt/pdf';
 
     // Define the file name and path
@@ -44,6 +48,8 @@ export async function GET(request: Request, context: { params: Params }) {
     return new NextResponse(JSON.stringify({
       pdfUrl: fileBuffer ? `data:application/pdf;base64,${fileBuffer.toString('base64')}` : null,
       legislacion,
+      ctema,
+      csubtema,
     }), {
       status: 200,
       headers: {

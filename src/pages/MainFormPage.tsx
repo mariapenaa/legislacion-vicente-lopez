@@ -44,9 +44,11 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
   };
 
   const handleButtonClick = () => {
-    console.log(nombre)
-    const queryString = new URLSearchParams({ tema, subtema, nombre }).toString();
-    router.push(`${route}?${queryString}`);
+    const params = new URLSearchParams();
+    params.append('tema', tema);
+    params.append('subtema', subtema);
+    if (nombre) params.append('nombre', nombre);
+    router.push(`${route}?${params.toString()}`);
   };
 
   const fetchSubTemas = async (id: number) => {

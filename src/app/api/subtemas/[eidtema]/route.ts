@@ -12,7 +12,6 @@ const models = initModels(sequelize);
 type Params = {
     eidtema: string
 }
- 
   
 export async function GET(request: Request, context: { params: Params }) {
   const { eidtema } = context.params
@@ -25,8 +24,9 @@ export async function GET(request: Request, context: { params: Params }) {
 
     const subtemas = await models.leg_subtemas.findAll({
       where: {
-        eidtema: eidtema // Filtramos por el eidtema recibido
-      }
+        eidtema: eidtema
+      },
+      order: [['csubtema', 'ASC']]
     });
     return NextResponse.json(subtemas);
   } catch (error) {

@@ -8,6 +8,8 @@ export default function Page({ params }: { params: { id: string } }) {
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
     const [legislacionDetails, setLegislacionDetails] = useState<any>(null); // Adjust type as needed
     const [loading, setLoading] = useState(true);
+    const [temaName, setTemaName] = useState('')
+    const [subtemaName, setSubtemaName] = useState('')
 
     useEffect(() => {
         setLoading(true);
@@ -19,6 +21,8 @@ export default function Page({ params }: { params: { id: string } }) {
                         const data = await response.json();
                         setPdfUrl(data.pdfUrl);
                         setLegislacionDetails(data.legislacion);
+                        setTemaName(data.ctema)
+                        setSubtemaName(data.csubtema)
                     } else {
                         console.error('Error fetching legislacion:', response.statusText);
                     }
@@ -31,13 +35,40 @@ export default function Page({ params }: { params: { id: string } }) {
             fetchLegislacion();
         }
     }, [params.id]);
-
     return (
         <div className="py-5 px-5 sm:py-12 sm:px-20">
             {loading ? (
                 <Skeleton variant="text" sx={{ fontSize: '1rem' }} width={100}/>
             ): (
-                <Breadcrumb secondItemRoute={`/informacion-diaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`} lastItem={`${legislacionDetails.ctitulo}`} />
+                <Breadcrumb 
+                items={[
+                    {
+                        href: '/informacion-diaria',
+                        name: 'Informacion Diaria',
+                        bold: false
+                    },
+                    {
+                        href: `/informacion-diaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
+                        name: 'Resultados',
+                        bold: false
+                    },
+                    {
+                        href: `/informacion-diaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
+                        name: temaName,
+                        bold: false
+                    },
+                    {
+                        href: `/informacion-diaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
+                        name: subtemaName,
+                        bold: false
+                    },
+                    {
+                        href: ``,
+                        name: 'PDF',
+                        bold: true
+                    },
+                ]}
+                />
             )}
 
             <div className="flex justify-center w-full mt-5">

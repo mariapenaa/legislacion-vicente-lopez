@@ -3,7 +3,7 @@ import SearchResultsHeader from '@/components/SearchResultsHeader'
 import EnhancedTable from '@/components/Table'
 import { Skeleton } from '@mui/material'
 import { useSearchParams } from 'next/navigation'
-import React, { Suspense, useState } from 'react'
+import React, { Suspense, useEffect, useState } from 'react'
 
 function ResultadosContent() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -11,11 +11,42 @@ function ResultadosContent() {
   const [types, setTypes] = useState([])
   const [loadingTypes, setLoadingTypes] = useState(true)
   const [resultsLength, setResultsLength] = useState(0)
+  const [temaName, setTemaName] = useState('')
+  const [subtemaName, setSubtemaName] = useState('')
+  const [loadingNames, setLoadingNames] = useState(true)
   const searchParams = useSearchParams();
   const tema = searchParams?.get('tema');
   const subtema = searchParams?.get('subtema');
   const nombre = searchParams?.get('nombre');
 
+  useEffect(()=>{
+    setLoadingNames(true)
+    const fetchNames = async () => {
+      try {
+        let route = ``
+        if(subtema && subtema !== 'all') route = `/api/detail/subtema/${subtema}`
+        if(tema && (!subtema || subtema === 'all')) route = `/api/detail/tema/${tema}`
+        if(route){
+          const response = await fetch(route);
+          if(response.ok){
+            const data = await response.json()
+            const {ctema, csubtema} = data
+            setTemaName(ctema)
+            setSubtemaName(csubtema)
+            setLoadingNames(false)
+          }else {
+            console.error('Error fetching temas:', response.statusText)
+          }
+        }else{
+          setLoadingNames(false)
+        }
+      } catch (error) {
+      console.error('Error connecting to the server:', error);
+      }
+    };
+    fetchNames()
+  }, [])
+  
   return (
     <div className="py-5 px-5 sm:py-12 sm:px-20">
       <SearchResultsHeader
@@ -28,6 +59,10 @@ function ResultadosContent() {
           setSearchQuery={setSearchQuery}
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
+          loadingNames={loadingNames}
+          temaName={temaName}
+          subtemaName={subtemaName}
+          searchName={nombre}
         />
       <div className="pt-5 mt-2 sm:pt-5 sm:mt-5">
         {loadingTypes ? (

@@ -7,32 +7,30 @@ import { PathnameContext } from 'next/dist/shared/lib/hooks-client-context.share
 import { Pathway_Gothic_One } from 'next/font/google';
 
 interface BreadcrumbProps {
+    items: BreadCrumbItem[]
     lastItem?: string;
     secondItemRoute?: string;
 }
 
-const Breadcrumb: React.FC<BreadcrumbProps> = ({ lastItem, secondItemRoute }) => {
-    const paths = usePathname();
-    let pathNames = paths?.split('/').filter(path => path);
-    pathNames = pathNames === undefined ? [] : pathNames
+export interface BreadCrumbItem {
+    href: string,
+    name: string,
+    bold: boolean,
+}
 
-    if (lastItem && pathNames.length > 0) {
-        pathNames[pathNames.length - 1] = lastItem;
-    }
+const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
 
     return (
         <div>
             <ul className="flex">
-                {pathNames?.map((link, index) => {
-                    let href = index === 1 && secondItemRoute ? secondItemRoute : `/${pathNames.slice(0, index + 1).join('/')}`;
-                    let itemClasses = paths === href ? 'font-bold text-gray-900' : 'text-gray-600';
-                    let itemLink = link[0].toUpperCase() + link.slice(1);
+                {items?.map((item, index) => {
+                    let itemClasses = item.bold ? 'font-bold text-gray-900' : 'text-gray-600';
                     return (
                         <React.Fragment key={index}>
                             <li className={`${itemClasses} font-poppins text-base`}>
-                                <Link href={href}>{itemLink}</Link>
+                                <Link href={item.href}>{item.name}</Link>
                             </li>
-                            <span className="mx-2 text-gray-600">{pathNames.length !== index + 1 && '/'}</span>
+                            <span className="mx-2 text-gray-600">{items.length !== index + 1 && '/'}</span>
                         </React.Fragment>
                     );
                 })}

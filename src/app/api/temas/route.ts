@@ -12,7 +12,11 @@ const models = initModels(sequelize);
 
 export async function GET() {
   try {
-    const temas = await models.leg_temas.findAll();
+    const temas = await models.leg_temas.findAll({
+      order: [
+        [sequelize.fn('TRIM', sequelize.col('ctema')), 'ASC']
+      ]
+    });
     return NextResponse.json(temas);
   } catch (error) {
     console.error('Error fetching temas:', error);
