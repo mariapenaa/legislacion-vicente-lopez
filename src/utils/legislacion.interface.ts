@@ -7,6 +7,7 @@ export interface Legislacion {
     eidtema: number,
     eidsubtema: number,
     pares: string,
+    fecha_normativa: string,
 }
 
 export interface FormattedLeg {

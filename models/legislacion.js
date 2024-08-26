@@ -35,6 +35,10 @@ module.exports = function(sequelize, DataTypes) {
     pares: {
       type: DataTypes.TEXT,
       allowNull: true
+    },
+    fecha_normativa: {
+      type: DataTypes.DATE,
+      allowNull: true,
     }
   }, {
     sequelize,

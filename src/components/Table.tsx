@@ -235,7 +235,7 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
         }
         if (response.ok) {
           const data = await response.json();
-          const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date:formatDate(leg.fecha_ing) }));
+          const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date: leg.fecha_normativa ? formatDate(leg.fecha_normativa) : formatDate(leg.fecha_ing) }));
           setLegislaciones(formattedData);
           const uniqueTypes = Array.from(new Set(formattedData.map((legislacion: FormattedLeg) => legislacion.type)));
           setTypes(uniqueTypes)

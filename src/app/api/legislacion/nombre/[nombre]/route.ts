@@ -49,7 +49,7 @@ export async function GET(req: Request, context: { params: Params }) {
     const excludeDate = eidtema ? formattedResponse.some((tema: any) => tema.eidtema === Number(eidtema)) : false
 
     const attributes = excludeDate
-      ? { exclude: ['fecha_ing'] }
+      ? { exclude: ['fecha_ing', 'fecha_normativa'] }
       : undefined; 
 
     let legislaciones = await models.legislacion.findAll({

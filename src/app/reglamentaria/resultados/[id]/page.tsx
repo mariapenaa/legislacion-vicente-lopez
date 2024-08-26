@@ -44,22 +44,22 @@ export default function Page({ params }: { params: { id: string } }) {
                 <Breadcrumb 
                 items={[
                     {
-                        href: '/informacion-diaria',
-                        name: 'Informacion Diaria',
+                        href: '/reglamentaria',
+                        name: 'Reglamentario',
                         bold: false
                     },
                     {
-                        href: `/informacion-diaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
+                        href: `/reglamentaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
                         name: 'Resultados',
                         bold: false
                     },
                     {
-                        href: `/informacion-diaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
+                        href: `/reglamentaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
                         name: temaName,
                         bold: false
                     },
                     {
-                        href: `/informacion-diaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
+                        href: `/reglamentaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
                         name: subtemaName,
                         bold: false
                     },
