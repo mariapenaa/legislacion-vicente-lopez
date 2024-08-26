@@ -5,11 +5,18 @@ import { Alert, Button, TextField, formControlClasses, CircularProgress } from "
 import CheckIcon from '@mui/icons-material/Check';
 import ErrorIcon from '@mui/icons-material/Error';
 
-export interface ContactoProps {
-  subtitle?: string,
-  displayTitle?: boolean,
+interface ContactoParams {
+  subtitle?: string;
+  displayTitle?: boolean;
 }
-export default function Contacto({subtitle, displayTitle}: ContactoProps) {
+
+interface ContactoProps {
+  params: ContactoParams,
+  searchParams?: string
+}
+
+const Contacto: React.FC<ContactoProps> = ({ params }) =>  {
+  let { subtitle, displayTitle } = params
   const [form, setForm] = useState({
     name: "",
     email: "",
@@ -157,3 +164,5 @@ export default function Contacto({subtitle, displayTitle}: ContactoProps) {
     </div>
   );
 }
+
+export default Contacto;

@@ -345,7 +345,14 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
               {filteredRows.length === 0 && !loading ? (
               <TableRow>
                 <TableCell colSpan={5} align="center">
-                  <Contacto displayTitle={false} subtitle="No hay resultados para tu búsqueda, contáctenos para más información"/>
+                  <Contacto 
+                  params={
+                    {
+                    displayTitle: false,
+                    subtitle: "No hay resultados para tu búsqueda, contáctenos para más información"
+                    }
+                  }
+                  />
                 </TableCell>
               </TableRow>
               ): (null)}
