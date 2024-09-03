@@ -41,7 +41,12 @@ export async function GET(req: Request, context: { params: Params }) {
     }
   
     const whereClause = {
-      ...(nombre && { ctitulo: { [Op.like]: `%${nombre}%` } }),
+      ...(nombre && { 
+        [Op.or]: [
+          { ctitulo: { [Op.like]: `%${nombre}%` } },
+          { cnom_archivo: { [Op.like]: `%${nombre}%` } }
+        ]
+      }),
       ...(eidtema && { eidtema }),
       ...(eidsubtema && eidsubtema !== "all" && { eidsubtema }),
     };

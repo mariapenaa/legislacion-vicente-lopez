@@ -304,20 +304,26 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - legislaciones.length) : 0;
 
-    const filteredRows = useMemo(() => {
-      return legislaciones.filter((row: FormattedLeg) => {
-        return (
+  const filteredRows = useMemo(() => {
+    return legislaciones.filter((row: FormattedLeg) => {
+      return (
+        (
           row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-          (selectedFilter === '' || row.type === selectedFilter)
-        );
-      });
-    }, [searchQuery, selectedFilter, legislaciones]);
-    const visibleRows = useMemo(() => {
-      return stableSort(filteredRows, getComparator(order, orderBy)).slice(
-        page * rowsPerPage,
-        page * rowsPerPage + rowsPerPage,
+        (selectedFilter === '' || row.type === selectedFilter)
+        ) || (
+          row.type.toLowerCase().includes(searchQuery.toLowerCase()) &&
+        (selectedFilter === '' || row.type === selectedFilter)
+        )
       );
-    }, [order, orderBy, page, rowsPerPage, filteredRows]);
+    });
+  }, [searchQuery, selectedFilter, legislaciones]);
+
+  const visibleRows = useMemo(() => {
+    return stableSort(filteredRows, getComparator(order, orderBy)).slice(
+      page * rowsPerPage,
+      page * rowsPerPage + rowsPerPage,
+    );
+  }, [order, orderBy, page, rowsPerPage, filteredRows]);
 
     useEffect(() => {
       setResultsLength(filteredRows.length);
