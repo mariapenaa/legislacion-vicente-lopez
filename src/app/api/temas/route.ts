@@ -9,6 +9,7 @@ if (!sequelize) {
   }
 
 const models = initModels(sequelize);
+export const dynamic = 'force-dynamic';
 
 export async function GET() {
   try {
