@@ -4,6 +4,10 @@ import { SubTema } from "@/utils/subtema.interface";
 import { FormControl, InputLabel, MenuItem, Select, Button, Skeleton, TextField } from "@mui/material";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Dayjs } from "dayjs";
 
 interface InformacionFormProps {
   title: string;
@@ -13,6 +17,7 @@ interface InformacionFormProps {
   loadingTemas: boolean;
   firstSearchLabel: string;
   displaySearchFilter: boolean;
+  displayDateFilter: boolean;
 }
 
 export interface TemaOptions {
@@ -20,11 +25,13 @@ export interface TemaOptions {
   label: string;
 }
 
-export default function MainFormPage({ title, subtitle, temaOptions, route, loadingTemas, firstSearchLabel, displaySearchFilter }: InformacionFormProps) {
+export default function MainFormPage({ title, subtitle, temaOptions, route, loadingTemas, firstSearchLabel, displaySearchFilter, displayDateFilter }: InformacionFormProps) {
   const router = useRouter();
   const [tema, setTema] = useState('');
   const [subtema, setSubtema] = useState('');
   const [nombre, setNombre] = useState('')
+  const [fechaInicio, setFechaInicio] = useState<Dayjs | null>(null)
+  const [fechaFin, setFechaFin] = useState<Dayjs | null>(null)
   const [subtemaOptions, setSubtemaOptions] = useState([]);
   const [loadingSubTemas, setLoadingSubTemas] = useState(false);
 
@@ -48,6 +55,8 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
     params.append('tema', tema);
     params.append('subtema', subtema);
     if (nombre) params.append('nombre', nombre);
+    if (fechaInicio) params.append('fechaInicio', fechaInicio.format('YYYY-MM-DD'));
+    if (fechaFin) params.append('fechaFin', fechaFin.format('YYYY-MM-DD'));
     router.push(`${route}?${params.toString()}`);
   };
 
@@ -132,8 +141,36 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
           ): (
             <></>
           )}
+          {displayDateFilter ? (
+            <div className="mb-5 sm:mb-8">
+              <p className="text-md sm:text-xl">Búsqueda por fecha</p>
+              <div className="flex gap-2">
+                <LocalizationProvider dateAdapter={AdapterDayjs}  adapterLocale="en-gb">
+                  <DatePicker
+                    views={['year', 'month', 'day']}
+                    className="w-full mt-2 sm:mt-5"
+                    label="Inicio"
+                    value={fechaInicio}
+                    onChange={(newValue: any) => setFechaInicio(newValue)}
+                  />
+                </LocalizationProvider>
+                <LocalizationProvider dateAdapter={AdapterDayjs}  adapterLocale="en-gb">
+                  <DatePicker
+                    className="w-full mt-2 sm:mt-5"
+                    label="Fin"
+                    views={['year', 'month', 'day']}
+                    value={fechaFin}
+                    onChange={(newValue: any) => setFechaFin(newValue)}
+                    referenceDate={fechaInicio || null} 
+                  />
+                </LocalizationProvider>
+              </div>
+            </div>
+          ): (
+            <></>
+          )}
           <div className="flex justify-end">
-            <Button variant="contained" disabled={(!subtema || !tema) && nombre === ''} onClick={handleButtonClick}>Buscar</Button>
+            <Button variant="contained" disabled={((!subtema || !tema) && nombre === '') || (fechaInicio !== null && fechaFin === null) || (fechaFin !== null && fechaInicio === null)} onClick={handleButtonClick}>Buscar</Button>
           </div>
         </div>
       </div>

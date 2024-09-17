@@ -45,7 +45,7 @@ export default function Page({ params }: { params: { id: string } }) {
                 items={[
                     {
                         href: '/reglamentaria',
-                        name: 'Reglamentario',
+                        name: 'Digesto Digital',
                         bold: false
                     },
                     {

@@ -35,9 +35,10 @@ export default function Reglamentaria() {
 
   return (
     <MainFormPage
+      displayDateFilter={true}
       displaySearchFilter={true}
       firstSearchLabel="Seleccione el tema que quiere consultar"
-      title="Reglamentario"
+      title="Digesto Digital"
       subtitle="Consultá de manera simple y ágil la reglamentación"
       temaOptions={temaOptions}
       loadingTemas={loadingTemas}

@@ -119,37 +119,37 @@ h3 {
 }
 
 .child-container {
-  min-height:120vh;
+  min-height:130vh;
 }
 
 @media screen and (min-height: 700px) {
   .child-container {
-    min-height:105vh;
+    min-height:115vh;
   }
 }
 
 
 @media screen and (min-height: 800px) {
   .child-container {
-    min-height:90vh;
+    min-height:100vh;
   }
 }
 
 @media screen and (max-width: 768px) {
   .child-container {
-    min-height:90vh;
+    min-height:100vh;
   }
 }
 
 
 @media screen and (max-width: 1025px) {
   .child-container {
-    min-height:120vh;
+    min-height:130vh;
   }
 }
 
 @media screen and (max-width: 1000px) {
   .child-container {
-    min-height:90vh;
+    min-height:100vh;
   }
 }

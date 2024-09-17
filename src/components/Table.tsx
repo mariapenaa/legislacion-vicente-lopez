@@ -12,7 +12,6 @@ import TablePagination from '@mui/material/TablePagination';
 import TableRow from '@mui/material/TableRow';
 import TableSortLabel from '@mui/material/TableSortLabel';
 import Paper from '@mui/material/Paper';
-import Checkbox from '@mui/material/Checkbox';
 import { visuallyHidden } from '@mui/utils';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
@@ -22,6 +21,8 @@ import { Skeleton } from '@mui/material';
 import { DateTime } from 'luxon';
 import Contacto from '@/app/contacto/page';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
+import dayjs from 'dayjs';
+
 
 interface Data {
   id: number;
@@ -181,14 +182,16 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
 interface EnhancedTableProps {
   searchQuery: string;
   selectedFilter: string;
-  queryParams: {tema: any, subtema: any, nombre?:any},
+  queryParams: {tema: any, subtema: any, nombre?:any, fechaInicio?: any, fechaFin?: any},
   setTypes: any;
   setLoadingTypes: any
   setResultsLength: any
+  startDate?: any
+  endDate?: any
 }
 
 
-export default function EnhancedTable({ searchQuery, setResultsLength, selectedFilter, queryParams, setTypes, setLoadingTypes }:EnhancedTableProps) {
+export default function EnhancedTable({ searchQuery, setResultsLength, selectedFilter, queryParams, setTypes, setLoadingTypes, startDate, endDate }:EnhancedTableProps) {
   const [order, setOrder] = React.useState<Order>('asc');
   const [orderBy, setOrderBy] = React.useState<keyof Data>('name');
   const [selected, setSelected] = React.useState<readonly number[]>([]);
@@ -206,33 +209,30 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
   }
   
 
-
   const formatDate = (datetime: string) => {
     const date = new Date(datetime);
-    const formattedDate = date.toLocaleDateString('es-ES', {
-      day: '2-digit',
-      month: '2-digit',
-      year: 'numeric',
-    });
-    
+    const day = String(date.getUTCDate()).padStart(2, '0');
+    const month = String(date.getUTCMonth() + 1).padStart(2, '0'); // Los meses en UTC también son cero-basados
+    const year = date.getUTCFullYear();
+
+    const formattedDate = `${day}/${month}/${year}`;
     return formattedDate
   }
+
   useEffect(()=>{
     setLoading(true)
     setLoadingTypes(true)
-    const { tema, subtema, nombre } = queryParams
+    const { tema, subtema, nombre, fechaInicio, fechaFin} = queryParams
     const fetchTemas = async () => {
       try {
         let response;
         const params = new URLSearchParams();
         params.append('type', typeInformacionDiaria ? 'informacion-diaria' : 'reglamentaria');
-        if (nombre) {
-          if (tema) params.append('tema', tema);
-          if (subtema) params.append('subtema', subtema);
-          response = await fetch(`/api/legislacion/nombre/${nombre}?${params.toString()}`);
-        } else {
-          response = await fetch(`/api/legislacion/${tema}/${subtema}`);
-        }
+        if (tema) params.append('tema', tema);
+        if (subtema) params.append('subtema', subtema);
+        if (fechaInicio) params.append('fechaInicio', fechaInicio)
+        if (fechaFin) params.append('fechaFin', fechaFin)
+        response = await fetch(`/api/legislacion/all?${params.toString()}`);
         if (response.ok) {
           const data = await response.json();
           const formattedData = data.map((leg: Legislacion) => ({ name: leg.ctitulo, type: leg.cnom_archivo, id: leg.eidlegislacion, date: leg.fecha_normativa ? formatDate(leg.fecha_normativa) : formatDate(leg.fecha_ing) }));
@@ -304,19 +304,29 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - legislaciones.length) : 0;
 
-  const filteredRows = useMemo(() => {
-    return legislaciones.filter((row: FormattedLeg) => {
-      return (
-        (
-          row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        (selectedFilter === '' || row.type === selectedFilter)
-        ) || (
-          row.type.toLowerCase().includes(searchQuery.toLowerCase()) &&
-        (selectedFilter === '' || row.type === selectedFilter)
-        )
-      );
-    });
-  }, [searchQuery, selectedFilter, legislaciones]);
+    const filteredRows = useMemo(() => {
+      return legislaciones.filter((row: FormattedLeg) => {
+        const fechaNormativa = dayjs(row.date, 'DD/MM/YYYY').toDate(); 
+        const isWithinDateRange = 
+          (!startDate || fechaNormativa >= new Date(startDate)) && 
+          (!endDate || fechaNormativa <= new Date(endDate));
+        return (
+          isWithinDateRange && ( // Add date filtering here
+            (
+              row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+              (selectedFilter === '' || row.type === selectedFilter)
+            ) || (
+              row.type.toLowerCase().includes(searchQuery.toLowerCase()) &&
+              (selectedFilter === '' || row.type === selectedFilter)
+            ) || (
+              row.type.toLowerCase().includes(searchQuery.toLowerCase()) &&
+              (selectedFilter === '' || row.type === selectedFilter)
+            )
+          )
+        );
+      });
+    }, [searchQuery, selectedFilter, legislaciones, startDate, endDate]);
+    
 
   const visibleRows = useMemo(() => {
     return stableSort(filteredRows, getComparator(order, orderBy)).slice(

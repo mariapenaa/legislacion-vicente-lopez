@@ -1,13 +1,17 @@
 'use client'
 import SearchResultsHeader from '@/components/SearchResultsHeader'
 import EnhancedTable from '@/components/Table'
+import { StartRounded } from '@mui/icons-material'
 import { Skeleton } from '@mui/material'
+import { Dayjs } from 'dayjs'
 import { useSearchParams } from 'next/navigation'
 import React, { Suspense, useEffect, useState } from 'react'
 
 function ResultadosContent() {
   const [searchQuery, setSearchQuery] = useState('');
   const [selectedFilter, setSelectedFilter] = useState('');
+  const [selectedStartDate, setSelectedStartDate] = useState<Dayjs | null>(null)
+  const [selectedEndDate, setSelectedEndDate] =  useState<Dayjs | null>(null)
   const [types, setTypes] = useState([])
   const [loadingTypes, setLoadingTypes] = useState(true)
   const [resultsLength, setResultsLength] = useState(0)
@@ -18,14 +22,16 @@ function ResultadosContent() {
   const tema = searchParams?.get('tema');
   const subtema = searchParams?.get('subtema');
   const nombre = searchParams?.get('nombre');
+  const fechaInicio = searchParams?.get('fechaInicio');
+  const fechaFin = searchParams?.get('fechaFin');
 
   useEffect(()=>{
     setLoadingNames(true)
     const fetchNames = async () => {
       try {
         let route = ``
-        if(subtema && subtema !== 'all') route = `/api/detail/subtema/${subtema}`
-        if(tema && (!subtema || subtema === 'all')) route = `/api/detail/tema/${tema}`
+        if (subtema && subtema !== 'all') route = `/api/detail/subtema/${subtema}`
+        if (tema && (!subtema || subtema === 'all')) route = `/api/detail/tema/${tema}`
         if(route){
           const response = await fetch(route);
           if(response.ok){
@@ -48,8 +54,9 @@ function ResultadosContent() {
   }, [])
   
   return (
-    <div className="py-5 px-5 sm:py-12 sm:px-20">
+    <div className="py-5 px-5 sm:py-12 sm:px-20  bg-[#F6EFF5] h-[100vh]">
       <SearchResultsHeader
+          displayDateSelect={true}
           displaySearchSelect={true}
           title="Buscar legislaciones"
           selectOptions={types}
@@ -57,6 +64,8 @@ function ResultadosContent() {
           prevPath="/reglamentaria"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
+          setSelectedStartDate={setSelectedStartDate}
+          setSelectedEndDate={setSelectedEndDate}
           selectedFilter={selectedFilter}
           setSelectedFilter={setSelectedFilter}
           loadingNames={loadingNames}
@@ -74,9 +83,11 @@ function ResultadosContent() {
         setTypes={setTypes}
         setLoadingTypes={setLoadingTypes}
         searchQuery={searchQuery}
+        startDate={selectedStartDate}
+        endDate={selectedEndDate}
         setResultsLength={setResultsLength}
         selectedFilter={selectedFilter}
-        queryParams={{tema, subtema, nombre}}
+        queryParams={{tema, subtema, nombre, fechaInicio, fechaFin}}
         />
       </div>
     </div>

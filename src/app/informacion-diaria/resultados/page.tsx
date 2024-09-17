@@ -49,8 +49,9 @@ function ResultadosContent () {
   }, [])
 
     return (
-      <div className="py-5 px-5 sm:py-12 sm:px-20">
+      <div className="py-5 px-5 sm:py-12 sm:px-20 bg-[#F6EFF5] h-[100vh]">
         <SearchResultsHeader
+            displayDateSelect={false}
             displaySearchSelect={false}
             title="Buscar legislaciones"
             selectOptions={types}

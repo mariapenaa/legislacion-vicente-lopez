@@ -1,8 +1,12 @@
-import React, { useMemo } from 'react';
+import React, { useMemo, useState } from 'react';
 import Breadcrumb from '@/components/Breadcrumb';
 import { Search } from '@mui/icons-material';
 import { FormControl, InputAdornment, Link, MenuItem, Select, Skeleton, TextField } from '@mui/material';
 import { usePathname } from 'next/navigation';
+import { AdapterDayjs } from '@mui/x-date-pickers/AdapterDayjs';
+import { DatePicker } from '@mui/x-date-pickers/DatePicker';
+import { LocalizationProvider } from '@mui/x-date-pickers/LocalizationProvider';
+import { Dayjs } from 'dayjs';
 
 interface SearchResultsHeaderProps {
   title: string;
@@ -13,10 +17,13 @@ interface SearchResultsHeaderProps {
   selectedFilter: string;
   loadingTypes: boolean;
   displaySearchSelect: boolean;
+  displayDateSelect: boolean;
   setSelectedFilter: React.Dispatch<React.SetStateAction<string>>;
   loadingNames: boolean;
   temaName: string;
   subtemaName: string;
+  setSelectedStartDate?: any;
+  setSelectedEndDate?: any;
   searchName?: string | undefined | null;
 }
 
@@ -34,9 +41,15 @@ const SearchResultsHeader: React.FC<SearchResultsHeaderProps> = ({
   temaName,
   subtemaName,
   searchName,
+  setSelectedEndDate,
+  setSelectedStartDate,
+  displayDateSelect,
 }) => {
+  const [fechaInicio, setFechaInicio] = useState<Dayjs | null>(null)
+  const [fechaFin, setFechaFin] = useState<Dayjs | null>(null)
   const paths = usePathname();
   const pathNames = paths?.split('/').filter(path => path)
+  
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setSearchQuery(event.target.value);
   };
@@ -45,11 +58,19 @@ const SearchResultsHeader: React.FC<SearchResultsHeaderProps> = ({
     setSelectedFilter(event.target.value as string);
   };
 
+  const handleStartDateChange = (date: any) => {
+    setSelectedStartDate(date)
+  }
+
+  const handleEndDateChange = (date: any) => {
+    setSelectedEndDate(date)
+  }
+
   const breadcrumbArray = useMemo(()=>{
     const items = [
       {
         href: `/${pathNames && pathNames[0] ? pathNames[0] : ''}`,
-        name: `${pathNames && pathNames[0] && pathNames[0] === 'informacion-diaria' ? 'Información Diaria' : 'Reglamentario'}`,
+        name: `${pathNames && pathNames[0] && pathNames[0] === 'informacion-diaria' ? 'Legislación' : 'Digesto Digital'}`,
         bold: false
       },
       {
@@ -136,7 +157,33 @@ const SearchResultsHeader: React.FC<SearchResultsHeaderProps> = ({
         ): (
           <></>
         )}
-       
+        {displayDateSelect ? (
+          <div className="flex gap-2 ml-2">
+            <div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}  adapterLocale="en-gb">
+                <DatePicker
+                  views={['year', 'month', 'day']}
+                  className="w-full bg-white"
+                  label="Fecha inicio"
+                  value={fechaInicio}
+                  onChange={(newValue: any) => handleStartDateChange(newValue)}
+                />
+              </LocalizationProvider>
+            </div>
+            <div>
+              <LocalizationProvider dateAdapter={AdapterDayjs}  adapterLocale="en-gb">
+                <DatePicker
+                  views={['year', 'month', 'day']}
+                  className="w-full bg-white"
+                  label="Fecha fin"
+                  value={fechaFin}
+                  onChange={(newValue: any) => handleEndDateChange(newValue)}
+                  referenceDate={fechaInicio || null} 
+                />
+              </LocalizationProvider>
+            </div>
+          </div>
+        ) : (<></>)}
       </div>
       <div>
         <Link href={prevPath} className="cursor-pointer underline text-[#762D7B] text-md mt-2 font-dm-sans">Seleccionar un nuevo tema</Link>
