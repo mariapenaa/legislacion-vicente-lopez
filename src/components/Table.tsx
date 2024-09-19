@@ -227,9 +227,11 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
       try {
         let response;
         const params = new URLSearchParams();
+        console.log(nombre)
         params.append('type', typeInformacionDiaria ? 'informacion-diaria' : 'reglamentaria');
         if (tema) params.append('tema', tema);
         if (subtema) params.append('subtema', subtema);
+        if (nombre) params.append('nombre', nombre);
         if (fechaInicio) params.append('fechaInicio', fechaInicio)
         if (fechaFin) params.append('fechaFin', fechaFin)
         response = await fetch(`/api/legislacion/all?${params.toString()}`);

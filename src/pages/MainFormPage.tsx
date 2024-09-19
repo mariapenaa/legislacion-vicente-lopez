@@ -79,9 +79,9 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
 
   return (
     <div className="relative">
-      <div className="flex h-[50vh] w-100 justify-center bg-gradient-to-r from-[#54317F] to-[#7C2C79]">
+      <div className="flex absolute h-[50vh] w-[100%] justify-center bg-gradient-to-r from-[#54317F] to-[#7C2C79]">
       </div>
-      <div className="absolute w-full sm:w-auto px-5 sm:p-0 top-1/2 left-1/2 bottom-0 transform -translate-x-1/2 -translate-y-1/2">
+      <div className="w-full relative z-10 sm:w-auto px-5 py-10 sm:py-36 md:px-[10rem] xl:px-[25rem]  lg:px-[20rem] 2xl:px-[30rem]">
         <div className="flex-col pt-100">
           <p className='text-center text-2xl md:text-4xl sm:text-6xl mb-2 main-title text-white '>{title}</p>
           <p className="text-md md:text-2xl sm:text-3xl text-center text-white">{subtitle}</p>
@@ -92,20 +92,23 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
               {loadingTemas ? (
                   <Skeleton variant="rectangular" width="100%" height={52} />
                 ) : (
-                  <FormControl fullWidth className="mt-2 sm:mt-5">
-                    <InputLabel id="tema-select-label">Tema</InputLabel>
-                    <Select
-                      labelId="tema-select-label"
-                      id="tema-select"
-                      label="Tema"
-                      value={tema}
-                      onChange={handleTemaChange}
-                    >
-                      {temaOptions?.map(option => (
-                        <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                      ))}
-                    </Select>
-                  </FormControl>
+                  <div>
+                    <FormControl fullWidth className="mt-2 sm:mt-5">
+                      <InputLabel id="tema-select-label">Tema</InputLabel>
+                      <Select
+                        labelId="tema-select-label"
+                        id="tema-select"
+                        label="Tema"
+                        value={tema}
+                        onChange={handleTemaChange}
+                      >
+                        {temaOptions?.map(option => (
+                          <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                        ))}
+                      </Select>
+                    </FormControl>
+                    <p onClick={() => {setTema(''), setSubtema(''), setSubtemaOptions([])}} className="cursor-pointer underline text-[#762D7B] text-md mt-2 font-dm-sans">Limpiar</p>
+                  </div>
                 )
               }
           </div>
@@ -114,23 +117,26 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
             { loadingSubTemas ? (
               <Skeleton variant="rectangular" width="100%" height={52} />
               ): (
-              <FormControl fullWidth className="mt-2 sm:mt-5">
-                <InputLabel id="subtema-select-label">Subtema</InputLabel>
-                <Select
-                  disabled={!subtemaOptions || subtemaOptions.length === 0}
-                  labelId="subtema-select-label"
-                  id="subtema-select"
-                  label="Subtema"
-                  value={subtema}
-                  onChange={handleSubtemaChange}
-                >
-                    <MenuItem value="all"><b>VER TODO</b></MenuItem>
-                  {subtemaOptions?.map((option: any) => (
-                    <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
-                  ))}
-                </Select>
-              </FormControl>
-              )
+                <div>
+                  <FormControl fullWidth className="mt-2 sm:mt-5">
+                    <InputLabel id="subtema-select-label">Subtema</InputLabel>
+                    <Select
+                      disabled={!subtemaOptions || subtemaOptions.length === 0}
+                      labelId="subtema-select-label"
+                      id="subtema-select"
+                      label="Subtema"
+                      value={subtema}
+                      onChange={handleSubtemaChange}
+                    >
+                        <MenuItem value="all"><b>VER TODO</b></MenuItem>
+                      {subtemaOptions?.map((option: any) => (
+                        <MenuItem key={option.value} value={option.value}>{option.label}</MenuItem>
+                      ))}
+                    </Select>
+                  </FormControl>
+                  <p onClick={() => {setSubtema('')}} className="cursor-pointer underline text-[#762D7B] text-md mt-2 font-dm-sans">Limpiar</p>
+                </div>
+                  )
             }
           </div>
           {displaySearchFilter ? (
