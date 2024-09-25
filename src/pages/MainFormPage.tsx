@@ -177,7 +177,7 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
             <></>
           )}
           <div className="flex justify-end">
-            <Button variant="contained" disabled={((!subtema || !tema) && nombre === '') || (fechaInicio !== null && fechaFin === null) || (fechaFin !== null && fechaInicio === null)} onClick={handleButtonClick}>Buscar</Button>
+            <Button variant="contained" disabled={((!subtema || !tema) && nombre === '' && fechaInicio === null && fechaFin === null) || (fechaInicio !== null && fechaFin === null) || (fechaFin !== null && fechaInicio === null)} onClick={handleButtonClick}>Buscar</Button>
           </div>
         </div>
       </div>
