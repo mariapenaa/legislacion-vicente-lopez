@@ -17,12 +17,15 @@ import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useEffect, useMemo, useState } from 'react';
 import { FormattedLeg, Legislacion } from '@/utils/legislacion.interface';
-import { Skeleton } from '@mui/material';
+import { IconButton, Skeleton, useTheme } from '@mui/material';
 import { DateTime } from 'luxon';
 import Contacto from '@/app/contacto/page';
 import FileOpenIcon from '@mui/icons-material/FileOpen';
 import dayjs from 'dayjs';
-
+import { KeyboardArrowRight, KeyboardArrowLeft } from '@mui/icons-material';
+import { TablePaginationActionsProps } from '@mui/material/TablePagination/TablePaginationActions';
+import LastPageIcon from '@mui/icons-material/LastPage';
+import FirstPageIcon from '@mui/icons-material/FirstPage';
 
 interface Data {
   id: number;
@@ -48,15 +51,6 @@ function createData(
   }
 }
 
-function descendingComparator<T>(a: T, b: T, orderBy: keyof T) {
-  if (b[orderBy] < a[orderBy]) {
-    return -1;
-  }
-  if (b[orderBy] > a[orderBy]) {
-    return 1;
-  }
-  return 0;
-}
 
 type Order = 'asc' | 'desc';
 
@@ -70,6 +64,23 @@ function getComparator<Key extends keyof any>(
   return order === 'desc'
     ? (a, b) => descendingComparator(a, b, orderBy)
     : (a, b) => -descendingComparator(a, b, orderBy);
+}
+
+
+
+function descendingComparator<T>(a: any, b: any, orderBy:any) {
+  if (orderBy === 'date') {
+    // Compare the date fields using dayjs for accurate comparison
+    return dayjs(b.date, 'DD/MM/YYYY').diff(dayjs(a.date, 'DD/MM/YYYY'));
+  }
+  // Fallback for other fields
+  if (b[orderBy] < a[orderBy]) {
+    return -1;
+  }
+  if (b[orderBy] > a[orderBy]) {
+    return 1;
+  }
+  return 0;
 }
 
 // Since 2020 all major browsers ensure sort stability with Array.prototype.sort().
@@ -86,6 +97,62 @@ function stableSort<T>(array: readonly T[], comparator: (a: T, b: T) => number) 
     return a[1] - b[1];
   });
   return stabilizedThis.map((el) => el[0]);
+}
+
+function TablePaginationActions(props: TablePaginationActionsProps) {
+  const theme = useTheme();
+  const { count, page, rowsPerPage, onPageChange } = props;
+
+  const handleFirstPageButtonClick = (
+    event: React.MouseEvent<HTMLButtonElement>,
+  ) => {
+    onPageChange(event, 0);
+  };
+
+  const handleBackButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onPageChange(event, page - 1);
+  };
+
+  const handleNextButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onPageChange(event, page + 1);
+  };
+
+  const handleLastPageButtonClick = (event: React.MouseEvent<HTMLButtonElement>) => {
+    onPageChange(event, Math.max(0, Math.ceil(count / rowsPerPage) - 1));
+  };
+
+  return (
+    <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+      <IconButton
+        onClick={handleFirstPageButtonClick}
+        disabled={page === 0}
+        aria-label="first page"
+      >
+        {theme.direction === 'rtl' ? <LastPageIcon /> : <FirstPageIcon />}
+      </IconButton>
+      <IconButton
+        onClick={handleBackButtonClick}
+        disabled={page === 0}
+        aria-label="previous page"
+      >
+        {theme.direction === 'rtl' ? <KeyboardArrowRight /> : <KeyboardArrowLeft />}
+      </IconButton>
+      <IconButton
+        onClick={handleNextButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="next page"
+      >
+        {theme.direction === 'rtl' ? <KeyboardArrowLeft /> : <KeyboardArrowRight />}
+      </IconButton>
+      <IconButton
+        onClick={handleLastPageButtonClick}
+        disabled={page >= Math.ceil(count / rowsPerPage) - 1}
+        aria-label="last page"
+      >
+        {theme.direction === 'rtl' ? <FirstPageIcon /> : <LastPageIcon />}
+      </IconButton>
+    </Box>
+  );
 }
 
 interface HeadCell {
@@ -160,11 +227,11 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
             padding={headCell.disablePadding ? 'none' : 'normal'}
             sortDirection={orderBy === headCell.id ? order : false}
           >
-            <TableSortLabel
-              active={orderBy === headCell.id}
-              direction={orderBy === headCell.id ? order : 'asc'}
-              onClick={createSortHandler(headCell.id)}
-            >
+              <TableSortLabel
+                active={headCell.label !== 'Ver Publicación' ? true : false}
+                direction={orderBy === headCell.id ? order : 'asc'}
+                onClick={createSortHandler(headCell.id)}
+              >
               {headCell.label}
               {orderBy === headCell.id ? (
                 <Box component="span" sx={visuallyHidden}>
@@ -172,6 +239,7 @@ function EnhancedTableHead(props: EnhancedTableHeadProps) {
                 </Box>
               ) : null}
             </TableSortLabel>
+            
           </TableCell>
         ))}
       </TableRow>
@@ -306,28 +374,28 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - legislaciones.length) : 0;
 
-    const filteredRows = useMemo(() => {
-      return legislaciones.filter((row: FormattedLeg) => {
-        const fechaNormativa = dayjs(row.date, 'DD/MM/YYYY').toDate(); 
-        const isWithinDateRange = 
-          (!startDate || fechaNormativa >= new Date(startDate)) && 
-          (!endDate || fechaNormativa <= new Date(endDate));
-        return (
-          isWithinDateRange && ( // Add date filtering here
-            (
-              row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-              (selectedFilter === '' || row.type === selectedFilter)
-            ) || (
-              row.type.toLowerCase().includes(searchQuery.toLowerCase()) &&
-              (selectedFilter === '' || row.type === selectedFilter)
-            ) || (
-              row.type.toLowerCase().includes(searchQuery.toLowerCase()) &&
-              (selectedFilter === '' || row.type === selectedFilter)
-            )
+  const filteredRows = useMemo(() => {
+    return legislaciones.filter((row: FormattedLeg) => {
+      const fechaNormativa = dayjs(row.date, 'DD/MM/YYYY').toDate(); 
+      const isWithinDateRange = 
+        (!startDate || fechaNormativa >= new Date(startDate)) && 
+        (!endDate || fechaNormativa <= new Date(endDate));
+      return (
+        isWithinDateRange && ( // Add date filtering here
+          (
+            row.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+            (selectedFilter === '' || row.type === selectedFilter)
+          ) || (
+            row.type.toLowerCase().includes(searchQuery.toLowerCase()) &&
+            (selectedFilter === '' || row.type === selectedFilter)
+          ) || (
+            row.type.toLowerCase().includes(searchQuery.toLowerCase()) &&
+            (selectedFilter === '' || row.type === selectedFilter)
           )
-        );
-      });
-    }, [searchQuery, selectedFilter, legislaciones, startDate, endDate]);
+        )
+      );
+    });
+  }, [searchQuery, selectedFilter, legislaciones, startDate, endDate]);
     
 
   const visibleRows = useMemo(() => {
@@ -406,6 +474,7 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
                         id={labelId}
                         scope="row"
                         padding="none"
+                        style={{ maxWidth: '300px' }}
                       >
                         {row.name}
                       </TableCell>
@@ -431,11 +500,13 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
         <TablePagination
           rowsPerPageOptions={[5, 10, 25]}
           component="div"
+          colSpan={3}
           count={filteredRows.length}
           rowsPerPage={rowsPerPage}
           page={page}
           onPageChange={handleChangePage}
           onRowsPerPageChange={handleChangeRowsPerPage}
+          ActionsComponent={TablePaginationActions}
         />
       </Paper>
     </Box>
