@@ -1,5 +1,5 @@
-import initModels from '../../../../../../models/init-models';
-import sequelize from '../../../../../../config/database';
+import initModels from '../../../../../models/init-models';
+import sequelize from '../../../../../config/database';
 import { NextResponse } from 'next/server';
 import fs from 'fs';
 import path from 'path';
@@ -28,19 +28,32 @@ export async function GET(request: Request, context: { params: Params }) {
     if (!legislacion) {
         return NextResponse.error();
     }
-    const {eidtema, eidsubtema} = legislacion
-    const {ctema} = await models.leg_temas.findByPk(eidtema)
-    const {csubtema} = await models.leg_subtemas.findByPk(eidsubtema)
+    
+    const directoryPath = '/mnt/pdf';
 
-    return new NextResponse(JSON.stringify({
-      legislacion,
-      ctema,
-      csubtema,
-    }), {
+    // Define the file name and path
+    const { pares } = legislacion;
+    const fileName = extractFileName(pares);
+    const filePath = path.join(directoryPath, fileName);
+    const normalizedFilePath = path.normalize(filePath);
+
+    // Check if the file exists
+    if (!fs.existsSync(normalizedFilePath)) {
+      return NextResponse.error();
+    }
+
+    // Stream the file
+    const fileStream = fs.createReadStream(normalizedFilePath);
+
+    // Set headers for streaming PDF
+    const headers = new Headers({
+      'Content-Type': 'application/pdf',
+      'Content-Disposition': `inline; filename="${fileName}"`,
+    });
+
+    return new NextResponse(fileStream as unknown as BodyInit, {
+      headers,
       status: 200,
-      headers: {
-        'Content-Type': 'application/json',
-      },
     });
 
   } catch (error) {

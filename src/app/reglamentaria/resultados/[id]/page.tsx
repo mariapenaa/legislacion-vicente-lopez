@@ -19,10 +19,10 @@ export default function Page({ params }: { params: { id: string } }) {
                     const response = await fetch(`/api/legislacion/detail/${params.id}`);
                     if (response.ok) {
                         const data = await response.json();
-                        setPdfUrl(data.pdfUrl);
                         setLegislacionDetails(data.legislacion);
                         setTemaName(data.ctema)
                         setSubtemaName(data.csubtema)
+                        setPdfUrl(`/api/pdf/${params.id}`);
                     } else {
                         console.error('Error fetching legislacion:', response.statusText);
                     }
@@ -74,19 +74,13 @@ export default function Page({ params }: { params: { id: string } }) {
 
             <div className="flex justify-center w-full mt-5">
                 {loading ? (
-                    <Skeleton
-                        variant="rectangular"
-                        width="100%"
-                        height="70vh"
-                    />
+                    <Skeleton variant="rectangular" width="100%" height="70vh" />
                 ) : pdfUrl ? (
-                    <>
-                        <embed
-                            src={pdfUrl}
-                            type="application/pdf"
-                            style={{ width: '100%', height: '70vh' }}
-                        />
-                    </>
+                    <embed
+                        src={pdfUrl}
+                        type="application/pdf"
+                        style={{ width: '100%', height: '70vh' }}
+                    />
                 ) : (
                     <p>No PDF available</p>
                 )}

@@ -295,7 +295,6 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
       try {
         let response;
         const params = new URLSearchParams();
-        console.log(nombre)
         params.append('type', typeInformacionDiaria ? 'informacion-diaria' : 'reglamentaria');
         if (tema) params.append('tema', tema);
         if (subtema) params.append('subtema', subtema);
