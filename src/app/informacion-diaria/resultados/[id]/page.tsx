@@ -19,10 +19,10 @@ export default function Page({ params }: { params: { id: string } }) {
                     const response = await fetch(`/api/legislacion/detail/${params.id}`);
                     if (response.ok) {
                         const data = await response.json();
-                        setPdfUrl(data.pdfUrl);
                         setLegislacionDetails(data.legislacion);
                         setTemaName(data.ctema)
                         setSubtemaName(data.csubtema)
+                        setPdfUrl(`/api/pdf/${params.id}`);
                     } else {
                         console.error('Error fetching legislacion:', response.statusText);
                     }
