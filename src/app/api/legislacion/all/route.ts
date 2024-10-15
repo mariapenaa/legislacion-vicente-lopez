@@ -77,14 +77,14 @@ export async function GET(req: Request, context: { params: Params }) {
     });
 
     // Si la búsqueda es solo por nombre, aseguramos que se devuelvan solo los de reglamentario
-    if (!eidtema && type === 'reglamentaria') {
+    if (!eidtema && type === 'digesto-digital') {
       // Aquí, filtramos para excluir los temas de legislaciones que están en formattedResponse
       legislaciones = legislaciones.filter(
         (leg: any) => !formattedResponse.some((tema: any) => tema.eidtema === Number(leg.eidtema))
       );
     }
 
-    if (!eidtema && type === 'informacion-diaria') {
+    if (!eidtema && type === 'legislacion') {
       // Aquí, filtramos para incluir solo los temas de legislaciones que están en formattedResponse
       legislaciones = legislaciones.filter(
         (leg: any) => formattedResponse.some((tema: any) => tema.eidtema === Number(leg.eidtema))

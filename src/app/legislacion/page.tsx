@@ -37,7 +37,7 @@ export default function InformacionDiaria() {
       subtitle="Consultá de manera simple y ágil la información diaria"
       temaOptions={temaOptions}
       loadingTemas={loadingTemas}
-      route="informacion-diaria/resultados"
+      route="legislacion/resultados"
     />
   );
 }

@@ -44,22 +44,22 @@ export default function Page({ params }: { params: { id: string } }) {
                 <Breadcrumb 
                 items={[
                     {
-                        href: '/reglamentaria',
+                        href: '/digesto-digital',
                         name: 'Digesto Digital',
                         bold: false
                     },
                     {
-                        href: `/reglamentaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
+                        href: `/digesto-digital/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
                         name: 'Resultados',
                         bold: false
                     },
                     {
-                        href: `/reglamentaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
+                        href: `/digesto-digital/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
                         name: temaName,
                         bold: false
                     },
                     {
-                        href: `/reglamentaria/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
+                        href: `/digesto-digital/resultados?tema=${legislacionDetails.eidtema}&subtema=${legislacionDetails.eidsubtema}`,
                         name: subtemaName,
                         bold: false
                     },
@@ -77,7 +77,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <Skeleton variant="rectangular" width="100%" height="70vh" />
                 ) : pdfUrl ? (
                     <embed
-                        src={pdfUrl}
+                        src="https://s28.q4cdn.com/392171258/files/doc_downloads/test.pdf"
                         type="application/pdf"
                         style={{ width: '100%', height: '70vh' }}
                     />

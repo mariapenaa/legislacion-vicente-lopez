@@ -70,7 +70,7 @@ export async function GET(req: Request, context: { params: Params }) {
       );
     }
 
-    if (!eidtema && type === 'informacion-diaria') {
+    if (!eidtema && type === 'legislacion') {
       // Aquí, filtramos para incluir solo los temas de legislaciones que están en formattedResponse
       legislaciones = legislaciones.filter(
         (leg: any) => formattedResponse.some((tema: any) => tema.eidtema === Number(leg.eidtema))

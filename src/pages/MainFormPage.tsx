@@ -51,7 +51,21 @@ export default function MainFormPage({ title, subtitle, temaOptions, route, load
     setNombre(value)
   };
 
+  const event = ({ action, category, label, value }: any) => {
+    (window as any).gtag('event', action, {
+      event_category: category,
+      event_label: label,
+      value: value,
+    });
+  };
+
   const handleButtonClick = () => {
+    event({
+      action: `buscar_${displayDateFilter ? 'digesto-digital' : 'legislacion'}`,
+      category: `${displayDateFilter ? 'digesto-digital' : 'legislacion'}`,
+      label: `Búsqueda de ${displayDateFilter ? 'digesto-digital' : 'legislacion'}`,
+      value: `tema: ${tema}, subtema: ${subtema}, nombre: ${nombre}, fechaInicio: ${fechaInicio}, fechaFin: ${fechaFin}`,
+    });
     const params = new URLSearchParams();
     params.append('tema', tema);
     params.append('subtema', subtema);

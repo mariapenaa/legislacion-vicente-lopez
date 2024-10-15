@@ -273,7 +273,7 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
   const pathNames = pathname?.split('/').filter(path => path)
   if(pathNames && pathNames.length > -1){
     const first = pathNames[0]
-    typeInformacionDiaria = first === 'informacion-diaria' ? true : false
+    typeInformacionDiaria = first === 'legislacion' ? true : false
   }
   
 
@@ -295,7 +295,7 @@ export default function EnhancedTable({ searchQuery, setResultsLength, selectedF
       try {
         let response;
         const params = new URLSearchParams();
-        params.append('type', typeInformacionDiaria ? 'informacion-diaria' : 'reglamentaria');
+        params.append('type', typeInformacionDiaria ? 'legislacion' : 'digesto-digital');
         if (tema) params.append('tema', tema);
         if (subtema) params.append('subtema', subtema);
         if (nombre) params.append('nombre', nombre);

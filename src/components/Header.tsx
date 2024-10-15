@@ -40,14 +40,14 @@ export default function Header() {
                     'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem><a href="/reglamentaria">Digesto Digital</a></MenuItem>
-                    <MenuItem  href="/informacion-diaria"><a href="/informacion-diaria">Legislación</a></MenuItem>
+                    <MenuItem><a href="/digesto-digital">Digesto Digital</a></MenuItem>
+                    <MenuItem  href="/legislacion"><a href="/legislacion">Legislación</a></MenuItem>
                     <MenuItem><a href="/contacto">Contacto</a></MenuItem>
                 </Menu>
             </div>
             <div className="hidden sm:flex justify-between flex-row">
-                <Link passHref href="/reglamentaria" style={styles.headerTitle} className="ml-10 d-flex align-center text-center cursor-pointer">Digesto Digital</Link>
-                <Link passHref href="/informacion-diaria" style={styles.headerTitle} className="ml-10 d-flex align-center text-center cursor-pointer">Legislación</Link>
+                <Link passHref href="/digesto-digital" style={styles.headerTitle} className="ml-10 d-flex align-center text-center cursor-pointer">Digesto Digital</Link>
+                <Link passHref href="/legislacion" style={styles.headerTitle} className="ml-10 d-flex align-center text-center cursor-pointer">Legislación</Link>
                 <Link passHref href="/contacto" style={styles.headerTitle} className="ml-10 d-flex align-center text-center cursor-pointer">Contacto</Link>
             </div>
         </div>

@@ -71,7 +71,7 @@ const SearchResultsHeader: React.FC<SearchResultsHeaderProps> = ({
     const items = [
       {
         href: `/${pathNames && pathNames[0] ? pathNames[0] : ''}`,
-        name: `${pathNames && pathNames[0] && pathNames[0] === 'informacion-diaria' ? 'Legislación' : 'Digesto Digital'}`,
+        name: `${pathNames && pathNames[0] && pathNames[0] === 'legislacion' ? 'Legislación' : 'Digesto Digital'}`,
         bold: false
       },
       {

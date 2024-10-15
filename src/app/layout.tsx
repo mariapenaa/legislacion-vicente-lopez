@@ -6,6 +6,7 @@ import { Container, ThemeProvider } from "@mui/material";
 import theme from '../styles/theme';
 import Footer from "@/components/Footer";
 import Head from "next/head";
+import GoogleAnalytics from '@/components/GoogleAnalytics';
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -34,6 +35,7 @@ export default function RootLayout({
         {/* <title>{metadata.title.default}</title>
         <meta name="description" content={metadata.description} /> */}
       </Head>
+      <GoogleAnalytics />
       <body className={inter.className}>
         <ThemeProvider theme={theme}>
           <Header />

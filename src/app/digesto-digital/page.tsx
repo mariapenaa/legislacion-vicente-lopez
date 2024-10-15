@@ -42,7 +42,7 @@ export default function Reglamentaria() {
       subtitle="Consultá de manera simple y ágil la reglamentación"
       temaOptions={temaOptions}
       loadingTemas={loadingTemas}
-      route="reglamentaria/resultados"
+      route="digesto-digital/resultados"
     />
   );
 }

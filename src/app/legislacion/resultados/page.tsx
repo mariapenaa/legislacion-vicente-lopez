@@ -56,7 +56,7 @@ function ResultadosContent () {
             title="Buscar legislaciones"
             selectOptions={types}
             loadingTypes={loadingTypes}
-            prevPath="/informacion-diaria"
+            prevPath="/legislacion"
             searchQuery={searchQuery}
             setSearchQuery={setSearchQuery}
             selectedFilter={selectedFilter}

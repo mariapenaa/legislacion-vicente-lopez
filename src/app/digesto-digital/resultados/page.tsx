@@ -61,7 +61,7 @@ function ResultadosContent() {
           title="Buscar legislaciones"
           selectOptions={types}
           loadingTypes={loadingTypes}
-          prevPath="/reglamentaria"
+          prevPath="/digesto-digital"
           searchQuery={searchQuery}
           setSearchQuery={setSearchQuery}
           setSelectedStartDate={setSelectedStartDate}
