@@ -77,7 +77,7 @@ export default function Page({ params }: { params: { id: string } }) {
                     <Skeleton variant="rectangular" width="100%" height="70vh" />
                 ) : pdfUrl ? (
                     <embed
-                        src="https://s28.q4cdn.com/392171258/files/doc_downloads/test.pdf"
+                        src={pdfUrl}
                         type="application/pdf"
                         style={{ width: '100%', height: '70vh' }}
                     />
