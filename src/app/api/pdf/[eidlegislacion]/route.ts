@@ -48,7 +48,7 @@ export async function GET(request: Request, context: { params: Params }) {
     // Set headers for streaming PDF
     const headers = new Headers({
       'Content-Type': 'application/pdf',
-      'Content-Disposition': `inline; filename="${fileName}"`,
+      'Content-Disposition': `attachment; filename="${fileName}"`,
     });
 
     return new NextResponse(fileStream as unknown as BodyInit, {

@@ -40,9 +40,9 @@ export default function Header() {
                     'aria-labelledby': 'basic-button',
                     }}
                 >
-                    <MenuItem><a href="/digesto-digital">Digesto Digital</a></MenuItem>
-                    <MenuItem  href="/legislacion"><a href="/legislacion">Legislación</a></MenuItem>
-                    <MenuItem><a href="/contacto">Contacto</a></MenuItem>
+                    <MenuItem><a className="grey-hover" href="/digesto-digital">Digesto Digital</a></MenuItem>
+                    <MenuItem  href="/legislacion"><a className="grey-hover" href="/legislacion">Legislación</a></MenuItem>
+                    <MenuItem><a className="grey-hover" href="/contacto">Contacto</a></MenuItem>
                 </Menu>
             </div>
             <div className="hidden sm:flex justify-between flex-row">

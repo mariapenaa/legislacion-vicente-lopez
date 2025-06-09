@@ -3,6 +3,7 @@ import Breadcrumb from "@/components/Breadcrumb";
 import { useSearchParams } from "next/navigation";
 import { useState, useEffect } from "react";
 import Skeleton from '@mui/material/Skeleton';
+import { Button } from "@mui/material";
 
 export default function Page({ params }: { params: { id: string } }) {
     const [pdfUrl, setPdfUrl] = useState<string | null>(null);
@@ -11,6 +12,15 @@ export default function Page({ params }: { params: { id: string } }) {
     const [temaName, setTemaName] = useState('')
     const [subtemaName, setSubtemaName] = useState('')
 
+    const handleDownloadClick = () => {
+        if (typeof window.gtag !== 'undefined') {
+            window.gtag('event', 'pdf_download', {
+                event_category: 'PDF',
+                event_label: `PDF ${params.id}`,
+            });
+        }
+    };
+    
     useEffect(() => {
         setLoading(true);
         if (params.id) {
@@ -72,15 +82,26 @@ export default function Page({ params }: { params: { id: string } }) {
                 />
             )}
 
-            <div className="flex justify-center w-full mt-5">
+            <div className="flex w-full mt-5 flex-col items-end">
                 {loading ? (
                     <Skeleton variant="rectangular" width="100%" height="70vh" />
                 ) : pdfUrl ? (
-                    <embed
-                        src={pdfUrl}
-                        type="application/pdf"
+                    <>
+                    <Button
+                    variant="contained"
+                    component="a"
+                    href={`${pdfUrl}?download=true`}
+                    onClick={handleDownloadClick}
+                    download
+                    className="mb-2 text-white  hover:text-opacity-100"
+                    >
+                        Descargar
+                    </Button>
+                    <iframe
+                        src={pdfUrl+"#toolbar=0&navpanes=0&scrollbar=0"}
                         style={{ width: '100%', height: '70vh' }}
                     />
+                </>
                 ) : (
                     <p>No PDF available</p>
                 )}

@@ -22,7 +22,7 @@ const Breadcrumb: React.FC<BreadcrumbProps> = ({ items }) => {
 
     return (
         <div>
-            <ul className="flex">
+            <ul className="flex flex-wrap">
                 {items?.map((item, index) => {
                     let itemClasses = item.bold ? 'font-bold text-gray-900' : 'text-gray-600';
                     return (

@@ -37,9 +37,10 @@ a {
   align-items: center;
 }
 
-a:hover {
-    color:#282828 !important;
+a.grey-hover:hover {
+  color: #282828 !important;
 }
+
 
 p {
   font-family: "Poppins", sans-serif;

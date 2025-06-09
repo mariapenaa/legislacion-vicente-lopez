@@ -27,7 +27,7 @@ export default function Footer() {
                         <div className="sm:w-1/3  px-4  lg:mb-0">
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} bricolage-grotesque text-center sm:text-left`}>Email</h4>
-                                <a href="mailto:digesto@vicentelopez.gov.ar" className={`footer-subtitle ${josefin.className} text-center flex justify-center sm:justify-start`}>digesto@vicentelopez.gov.ar</a>
+                                <a href="mailto:digesto@vicentelopez.gov.ar" className={`grey-hover footer-subtitle ${josefin.className} text-center flex justify-center sm:justify-start`}>digesto@vicentelopez.gov.ar</a>
                             </div>
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} bricolage-grotesque text-center sm:text-left`}>Teléfono</h4>
@@ -37,7 +37,7 @@ export default function Footer() {
                         <div className="sm:w-1/4 px-4  lg:mb-0">
                             <div className="flex-col mb-4">
                                 <h4 className={`footer-title ${josefin.className} bricolage-grotesque text-center sm:text-left`}>Web</h4>
-                                <a href="https://www.vicentelopez.gov.ar/" target="_blank" className={`footer-subtitle ${josefin.className} text-center flex justify-center sm:justify-start`}>https://www.vicentelopez.gov.ar</a>
+                                <a href="https://www.vicentelopez.gov.ar/" target="_blank" className={`grey-hover footer-subtitle ${josefin.className} text-center flex justify-center sm:justify-start`}>https://www.vicentelopez.gov.ar</a>
                             </div>
                         </div>
                     </div>
